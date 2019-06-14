@@ -9,7 +9,7 @@ const candyCrash = (s) => {
             st.unshift(c);
         }
     }
-    return st.reduce((a, b) => b + a);
+    return st.reduce((a, c) => c + a);
 }
 
 console.info(candyCrash("aabccdddcbbaeeefffgh"));
