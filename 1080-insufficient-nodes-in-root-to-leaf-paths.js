@@ -1,66 +1,60 @@
-const TreeNode = (val) => ({
-    val,
-    left: null,
-    right: null,
-});
+const TreeNode = function(val) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+}
+
+
 
 const array2Tree = arr => {
-    if (!arr.length) return null;
-    const value = arr.shift();
-    if(!value) return null;
-    const root = TreeNode(value);
-    root.left = array2Tree(arr);
-    root.right = array2Tree(arr);
-    return root;
+    const queue = [];
+    if (!arr || !arr.length) return null;
+    const root = new TreeNode(arr.shift());
+    queue.push(root);
+    while(queue.length) {
+        const node = queue.shift();
+        node.left = arr[0] ? new TreeNode(arr.shift()) : arr.shift();
+        node.right = arr[0] ? new TreeNode(arr.shift()) : arr.shift();
+        if (node.left) queue.push(node.left);
+        if (node.right) queue.push(node.right);
+    }
+    return root; 
 }
 
 const tree2Array = root => {
     if (!root) return [];
-    const arr = [];
-    arr.push(root.val);
-    arr.concat(tree2Array(root.left));
-    arr.concat(tree2Array(root.right));
-    return arr;
+    const arr = [], queue = [root];
+    while(queue.length) {
+        const node = queue.shift();
+        if (node) {
+            arr.push(node.val);
+            queue.push(node.left);
+            queue.push(node.right);
+        } else {
+            arr.push(null);
+        }
+    }
+    return arr; 
 }
-
-
-
 /**
  * @param {TreeNode} root
  * @param {number} limit
  * @return {TreeNode}
  */
 var sufficientSubset = function(root, limit) {
-    if (!root) return root;
-    const sum = dfs(root, limit);
-    return sum >= limit ? root : null;
+    if (!root) return null;
+    if (!root.left && !root.right) {
+        return root.val >= limit ? root : null;
+    }
+    root.right = sufficientSubset(root.right, limit - root.val);
+    root.left = sufficientSubset(root.left, limit - root.val);
+    return !root.left && !root.right ? null : root;
 };
 
-const dfs = (node, limit) => {
-    let leftSum, rightSum, curSum;
-    const hasLeft = (node.left !== null);
-    const hasRight = (node.right !== null);
-    
-    if (hasLeft) {
-        leftSum = dfs(node.left, limit - node.val);
-        if (leftSum < limit - node.val) node.left = null;
-    }
-    
-    if (hasRight) {
-        rightSum = dfs(node.right, limit - node.val);
-        if (rightSum < limit - node.val) node.right = null;
-    }
-    if (!hasLeft && hasRight) curSum = rightSum + node.val;
-    if (!hasRight && hasLeft) curSum = leftSum + node.val;
-    if (hasLeft && hasRight) curSum = Math.max(leftSum, rightSum) + node.val;
-    if (!hasLeft && !hasRight) curSum = node.val;
-    return curSum;
-}
+const arr1 = [1,2,3,4,-99,-99,7,8,9,-99,-99,12,13,-99,14];
+const arr2 = [5,4,8,11,null,17,4,7,1,null,null,5,3];
+const root = array2Tree(arr2);
 
-
-const root = array2Tree([5,4,8,11,null,17,4,7,1,null,null,5,3]);
-console.info("tree2Array");
-console.info(tree2Array(root));
-
-const newRoot = sufficientSubset(root, 22);
-//console.info(tree2Array(newRoot));
+console.info(tree2Array(root).join());
+const newRoot = sufficientSubset(root, 1);
+console.info(tree2Array(newRoot).join());
