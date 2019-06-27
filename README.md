@@ -11,3 +11,6 @@ git push -u origin master
 
 BFS, visited immidiately after append into queue
 Javascripts sort number need (a, b) => a - b
+six primitive values: Boolean Null Undefined Number String Symbol
+six falsy value: false, 0, "", null, undefined, NaN
+NaN == NaN NaN === NaN false

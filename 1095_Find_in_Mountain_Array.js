@@ -37,6 +37,37 @@ Constraints:
  * @param {number} target
  * @return {number}
  */
+
+const binarySearch = (arr, l, r, target, cache) => {
+    while(l <= r) {
+        const mid = Math.trunc(l + (r - l) / 2);
+        cache[mid] = cache[mid] !== undefined ? cache[mid] : arr[mid];
+        if (cache[mid] === target) return mid;
+        if (cache[mid] > target) r = mid - 1;
+        else l = mid + 1;
+    }
+    return -1;
+}
+
 var findInMountainArray = function(secret, target) {
-    
+    //find the peak
+    let l = 0; r = secret.length - 1, peak = -1;
+    const cache = {};
+    while(l <= r) {
+        const mid = Math.trunc(l + (r - l) / 2);
+        cache[mid - 1] = cache[mid - 1] !== undefined ? cache[mid - 1] : secret[mid - 1];
+        cache[mid + 1] = cache[mid + 1] !== undefined ? cache[mid + 1] : secret[mid + 1];
+        cache[mid] = cache[mid] || secret[mid];
+        if (cache[mid] > cache[mid - 1] && cache[mid] > cache[mid + 1]) { 
+            peak = mid; 
+            break; 
+        }
+        if (cache[mid] > cache[mid + 1]) r = mid - 1;
+        else l = mid + 1;
+    }
+    //find in increasing part
+    const ans = binarySearch(secret, 0, peak, target, cache);
+    return ans >= 0 ? ans : binarySearch(secret, peak, secret.length - 1, target, cache);
 };
+
+console.info(findInMountainArray([1,2,3,4,5,3,1], 3));
