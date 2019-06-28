@@ -41,5 +41,15 @@ The given expression represents a set of words based on the grammar given in the
  * @return {string[]}
  */
 var braceExpansionII = function(expression) {
-    
+    const ans = [], st = [[]];
+    for (const c of [...expression]) {
+        const pre = st[0];
+        if (c === '{') {
+            st.unshift([]);
+        } else if (c === '}') {
+            
+        } else if (c === ',') {
+
+        }
+    }
 };
