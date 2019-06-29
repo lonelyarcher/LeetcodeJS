@@ -53,8 +53,11 @@ var calculateByStack = function(s) {
     }
     return st.reduce((a, c) => a + c);
 };
-//without stack, record two part, sum up part (stack) is pre, the current part is cur
-//begin with 0 + s, so pre = cur = 0;
+//without stack, record two part, sum up part (stack) is pre, the current calculate part is cur, the current reading digis is num
+//begin with 0 + s, so pre = cur = num = 0; 
+//if op, the previous record operator is +/-, then add the cur to pre, set cur to num with sign of +/-
+//if op is */, then pre is kept, but calculate current with number.
+//at the end, add the pre and cur to get the answer.
 var calculate = function(s) {
     let op = '+', pre = cur = num = 0;
     for (const c of s + '+') {
