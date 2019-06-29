@@ -31,29 +31,48 @@ var cal = (a, b, o) => {
         default: return  Math.trunc(a / b);
     }
 };
-const opposite = op => {
-    switch(op) {
-        case '+': return '-';
-        case '-': return '+';
-    }
-};
-var calculate = function(s) {
-    //result: before the */, pre: since */, cur: current read number
-    let result = 0, pre = 0, cur = 0;
-    for (const c of [...s]) {
+ //use stack to save the number, need num and sign, then sum up to the answer.
+ //when meet operator */, we save the previous operator as op, then pop up the top of stack, calculate then push it back.
+var calculateByStack = function(s) {
+    let num = 0, op = '+', sign = 1;
+    const st = [];
+    for (const c of s + '+') {
         if (c === ' ') continue;
         if (/[0-9]/.test(c)) {
-            cur = cur * 10 + parseInt(c);
+            num = num * 10 + parseInt(c);
         } else {
-            result = cal(result, cur, op);
-            if (/\*|\//.test(c) && /\+|\-/.test(op)) {
-                result = cal(result, pre, opposite(op));
-                cur = cal(pre, cur, op);
-                pre = cur;
+            if (/\*|\//.test(op)) {
+                st.unshift(cal(st.shift(), num, op));    
+            } else {
+                st.unshift(num * sign);
             }
+            sign = c === '-' ? -1 : 1;
+            num = 0;
+            op = c;
         }         
     }
-    return result;
+    return st.reduce((a, c) => a + c);
+};
+//without stack, record two part, sum up part (stack) is pre, the current part is cur
+//begin with 0 + s, so pre = cur = 0;
+var calculate = function(s) {
+    let op = '+', pre = cur = num = 0;
+    for (const c of s + '+') {
+        if (c === ' ') continue;
+        if (/[0-9]/.test(c)) {
+            num = num * 10 + parseInt(c);
+        } else {
+            if (/\*|\//.test(op)) {
+                cur = cal(cur, num, op);    
+            } else {
+                pre += cur;
+                cur = num * (op === '-' ? -1 : 1);
+            }
+            num = 0;
+            op = c;
+        }         
+    }
+    return pre + cur;
 };
 
 console.info(calculate("3+2*2"));
