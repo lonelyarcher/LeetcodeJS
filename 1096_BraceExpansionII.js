@@ -40,16 +40,54 @@ The given expression represents a set of words based on the grammar given in the
  * @param {string} expression
  * @return {string[]}
  */
-var braceExpansionII = function(expression) {
-    const ans = [], st = [[]];
-    for (const c of [...expression]) {
-        const pre = st[0];
-        if (c === '{') {
-            st.unshift([]);
-        } else if (c === '}') {
-            
-        } else if (c === ',') {
+const mul = (al, bl) => {
+    if (!al.length) return bl;
+    if (!bl.length) return al;
+    return al.map(a => bl.map(b => a + b)).reduce((a, c) => a.concat(c));
+}
+const add = (al, bl) => Array.from(new Set(al.concat(bl)));
 
+var braceExpansionII = function(expression) {
+    let i = 0;
+    const list = [];
+    const ops = [];
+    while (i < expression.length) {
+        const c = expression.charAt(i);
+
+        if (c === '{') {
+            let level = 1, j = i + 1;
+            while (j < expression.length) {
+                if (expression.charAt(j) === '{') level++;
+                if (expression.charAt(j) === '}') level--;
+                if (level === 0) break;
+                j++;
+            }
+            list.push(braceExpansionII(expression.slice(i + 1, j)));
+            if (i > 0 && expression.charAt(i - 1) !== ',') ops.push(mul);
+            i = j;
+        }
+        if (/[a-z]/.test(c)){
+            let j = i + 1;
+            while (j < expression.length && /[a-z]/.test(expression.charAt(j))) {
+                j++;
+            }
+            list.push([expression.slice(i, j)]);
+            if (i > 0 && expression.charAt(i - 1) !== ',') ops.push(mul);
+            i = j - 1;
+        }
+            
+        if (c === ',') {
+            ops.push(add);
+        }
+        i++;
+    }
+    for (let i = 1; i < list.length; i++) {
+        if (ops[i - 1] === mul) {
+            list[i] = mul(list[i - 1], list[i]);
+            list[i - 1] = [];
         }
     }
+    return list.reduce((a, c) => add(a, c)).sort();
 };
+
+console.info(braceExpansionII("{{a,z},a{b,c},{ab,z}}"));
