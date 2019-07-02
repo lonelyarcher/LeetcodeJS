@@ -25,3 +25,6 @@ array reduce (accumulator, currentValue, currentIdx, array)
 
 function.call(obj, par1, par2) function.apply(obj, [par1, par2])
 
+Object vs Map: Object keys must be string, and has default keys like tostring constructor, valueof, hasOwnProperty, isProtoTypeof
+The typeof operator tests whether value belong to one of six basic types: "number", "string", "boolean", "object", "function" or "undefined".
+The instanceof operator tests whether the prototype property of a constructor appears anywhere in the prototypes chain of an object.

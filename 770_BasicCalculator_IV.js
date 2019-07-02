@@ -45,24 +45,45 @@ Keep a class Poly that knows a map from a list of free variables to a coefficien
 Algorithm
 
 Each function is straightforward individually. Let's list the functions we use:
+*/
 
-Poly:add(this, that) returns the result of this + that.
+const add = (m1, m2) => { //returns the result of m1 + m2.
+    const ans = new Map(m2);
+    for(const [k, v] of m1) {
+        ans.set(k, (ans.get(k) || 0) + v); 
+    }
+    return ans;
+};
 
-Poly:sub(this, that) returns the result of this - that.
+const sub = (m1, m2) => { //returns the result of m1 - m2.
+    const ans = new Map(m2);
+    for(const [k, v] of m1) {
+        ans.set(k, (ans.get(k) || 0) - v); 
+    }
+    return ans;
+};
 
-Poly:mul(this, that) returns the result of this * that.
+const mul = (m1, m2) => { //returns the result of m1 * m2.
+    const ans = new Map();
+    for(const [k1, v1] of m1) {
+        for(const [k2, v2] of m1) {
+            ans = add(ans, [[k1.concat(k2).sort(), v1 * v2]])
+        }
+    }
+    return ans;
+}
 
-Poly:evaluate(this, evalmap) returns the polynomial after replacing all free variables with constants as specified by evalmap.
+const evaluate = (poly, evalmap) => {}; //returns the polynomial after replacing all free variables with constants as specified by evalmap.
 
-Poly:toList(this) returns the polynomial in the correct output format.
+const toList = (poly) => {}; //returns the polynomial in the correct output format.
 
-Solution::combine(left, right, symbol) returns the result of applying the binary operator represented by symbol to left and right.
+const combine = (left, right, symbol) => {}; //returns the result of applying the binary operator represented by symbol to left and right.
 
-Solution::make(expr) makes a new Poly represented by either the constant or free variable specified by expr.
+const make = (expr) => {}; //makes a new Poly represented by either the constant or free variable specified by expr.
 
-Solution::parse(expr) parses an expression into a new Poly.
+const parse = (expr) => {}; // parses an expression into a new Poly.
 
-
+/*
 Complexity Analysis
 
 Time Complexity: Let NN is the length of expression and MM is the length of evalvars and evalints. 
