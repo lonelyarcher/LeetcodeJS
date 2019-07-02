@@ -47,7 +47,7 @@ const mul = (al, bl) => {
 }
 const add = (al, bl) => Array.from(new Set(al.concat(bl)));
 
-var braceExpansionII = function(expression) {
+var braceExpansionII_Recursion = function(expression) {
     let i = 0;
     const list = [];
     const ops = [];
@@ -81,13 +81,47 @@ var braceExpansionII = function(expression) {
         }
         i++;
     }
-    for (let i = 1; i < list.length; i++) {
+    for (let i = 1; i < list.length; i++) { //first combine all the multiply operations
         if (ops[i - 1] === mul) {
             list[i] = mul(list[i - 1], list[i]);
             list[i - 1] = [];
         }
     }
-    return list.reduce((a, c) => add(a, c)).sort();
+    return list.reduce((a, c) => add(a, c)).sort(); //add all list together and sort to answer
+};
+
+
+//with stack, no recursion
+const cal = (res, pre, op, cur) => { // res (+) pre op(+/*) cur([c]/stack result)
+    if (op === add) {
+        res = add(res, pre);
+        pre = cur;
+        op = mul;
+    } else pre = mul(pre, cur);
+    return {res, pre, op, cur};
+};
+
+var braceExpansionII = function(expression) {   // res (add) pre op cur/[c]
+    let res = pre = cur = [], op = mul;
+    const st = [];
+    for (let i = 0; i < expression.length; i++) {
+        const c = expression.charAt(i);
+        if (c === '}') {
+            cur = add(res, pre);
+            ({res, pre, op} = st.shift());
+            ({res, pre, op, cur} = cal(res, pre, op, cur));
+        }
+        if (/^[a-z]$/.test(c)) {
+            ({res, pre, op, cur} = cal(res, pre, op, [c]));
+        } 
+        if (c === '{') {
+            st.unshift({res, pre, op});
+            res = pre = cur = [];
+            op = mul;
+        }
+        if (c === ',') op = add;       
+    }
+    return add(res, pre).sort();
 };
 
 console.info(braceExpansionII("{{a,z},a{b,c},{ab,z}}"));
