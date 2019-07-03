@@ -72,16 +72,89 @@ const mul = (m1, m2) => { //returns the result of m1 * m2.
     }
     return ans;
 }
+//returns the polynomial after replacing all free variables with constants as specified by evalmap.
+const evaluate = (poly, evalmap) => {
+    poly.reduce((a, c) => {
+        const nvalue = c[1];
+        const nkey = [];
+        c[0].forEach(e => {
+            if (evalmap.has(e)) nvalue *= evalmap.get(e);
+            else nkey.push(e);
+        });
+        a.set(nkey, nvalue);
+        a.delete(c[0]);
+    }, new Map());
+}; 
 
-const evaluate = (poly, evalmap) => {}; //returns the polynomial after replacing all free variables with constants as specified by evalmap.
+//returns the polynomial in the correct output format.
+const toList = (poly) => {
+    return poly.keys().sort().map(k => poly.get(k) + k.reduce((a, c) => a+'*'+b));
+}; 
 
-const toList = (poly) => {}; //returns the polynomial in the correct output format.
+//returns the result of applying the binary operator represented by symbol to left and right.
+const combine = (left, right, symbol) => {
+    switch (symbol) {
+        case '+': return add(left, right);
+        case '*': return mul(left, right); 
+        case '-': return sub(left, right);
+        default: return null;    
+    }
+}
+//makes a new Poly represented by either the constant or free variable specified by expr.
+const make = (expr) => {
+    const poly = new Map();
+    if (!expr) return poly;
+    if (/[0-9]/.test(expr.charAt(0))) {
+        map.set([], parseInt(expr));
+    } else {
+        map.set([expr], 1);
+    }
+    return poly;
+}; 
 
-const combine = (left, right, symbol) => {}; //returns the result of applying the binary operator represented by symbol to left and right.
+const cal = (res, pre, op, cur) => {
+    if (op === mul) {
+        pre = mul(pre, cur);
+    } else {
+        res = add(res, pre);
+        pre = cur;
+    }
+};
 
-const make = (expr) => {}; //makes a new Poly represented by either the constant or free variable specified by expr.
-
-const parse = (expr) => {}; // parses an expression into a new Poly.
+// parses an expression into a new Poly.
+const parse = (expr) => { // res pre op cur
+    let res = pre = new Map(), cur, num = 0, op = add;
+    const st = [];
+    for (const c of expr) {
+        if (c === ' ') continue;
+        if (/[0-9]/.test(c)) {
+            num = num * 10 + c;
+        } else {
+            if (num > 0){
+                cur = make(num + '');
+                cal(res, pre, cur);       
+            }
+            if (/[a-z]/.test(c)) {
+                cur = make(c);
+                cal(res, pre, cur);
+            }
+            if (/[\+\-\*]/.test(c)) {
+                op = c === '+' ? add : (c === '-' ? sub : mul);
+            }
+            if (c === '(') {
+                st.unshift({res, pre, op});
+                res = pre = new Map();
+                op = add;
+            }
+            if (c === ')') {
+                cur = add(res,pre);
+                ({res, pre, op} = st.shift());
+                cal(res, pre, op, cur);
+            }
+        }
+    }
+    return add(res, pre);
+};
 
 /*
 Complexity Analysis
@@ -99,5 +172,7 @@ Space Complexity: O(N + M)O(N+M).
  * @return {string[]}
  */
 var basicCalculatorIV = function(expression, evalvars, evalints) {
-    
+    const evalMap = evalvars.reduce((a, c, i) => { a[c] = evalints[i]; return a; }, {});
+    return toList(evaluate(parse(expression), evalMap));
 };
+
