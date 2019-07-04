@@ -15,26 +15,7 @@ An example of a well formatted answer is ["-2*a*a*a", "3*a*a*b", "3*b*b", "4*a",
 Terms (including constant terms) with coefficient 0 are not included.  For example, an expression of "0" has an output of [].
 Examples:
 
-Input: expression = "e + 8 - a + 5", evalvars = ["e"], evalints = [1]
-Output: ["-1*a","14"]
 
-Input: expression = "e - 8 + temperature - pressure",
-evalvars = ["e", "temperature"], evalints = [1, 12]
-Output: ["-1*pressure","5"]
-
-Input: expression = "(e + 8) * (e - 8)", evalvars = [], evalints = []
-Output: ["1*e*e","-64"]
-
-Input: expression = "7 - 7", evalvars = [], evalints = []
-Output: []
-
-Input: expression = "a * b * c + b * a * c * 4", evalvars = [], evalints = []
-Output: ["5*a*b*c"]
-
-Input: expression = "((a - b) * (b - c) + (c - a)) * ((a - b) + (b - c) * (c - a))",
-evalvars = [], evalints = []
-Output: ["-1*a*a*b*b","2*a*a*b*c","-1*a*a*c*c","1*a*b*b*b","-1*a*b*b*c","-1*a*b*c*c","1*a*c*c*c","-1*b*b*b*c","2*b*b*c*c","-1*b*c*c*c","2*a*a*b","-2*a*a*c","-2*a*b*b","2*a*c*c","1*b*b*b","-1*b*b*c","1*b*c*c","-1*c*c*c","-1*a*a","1*a*b","1*a*c","-1*b*c"]
-Note:
 
 expression will have length in range [1, 250].
 evalvars, evalints will have equal lengths in range [0, 100].
@@ -49,7 +30,7 @@ Each function is straightforward individually. Let's list the functions we use:
 
 const add = (m1, m2) => { //returns the result of m1 + m2.
     const ans = new Map(m2);
-    for(const [k, v] of m1) {
+    for(const [k, v] of m1.entries()) {
         ans.set(k, (ans.get(k) || 0) + v); 
     }
     return ans;
@@ -57,7 +38,7 @@ const add = (m1, m2) => { //returns the result of m1 + m2.
 
 const sub = (m1, m2) => { //returns the result of m1 - m2.
     const ans = new Map(m2);
-    for(const [k, v] of m1) {
+    for(const [k, v] of m1.entries()) {
         ans.set(k, (ans.get(k) || 0) - v); 
     }
     return ans;
@@ -65,49 +46,40 @@ const sub = (m1, m2) => { //returns the result of m1 - m2.
 
 const mul = (m1, m2) => { //returns the result of m1 * m2.
     const ans = new Map();
-    for(const [k1, v1] of m1) {
-        for(const [k2, v2] of m1) {
+    for(const [k1, v1] of m1.entries()) {
+        for(const [k2, v2] of m1.entries()) {
             ans = add(ans, [[k1.concat(k2).sort(), v1 * v2]])
         }
     }
     return ans;
 }
 //returns the polynomial after replacing all free variables with constants as specified by evalmap.
-const evaluate = (poly, evalmap) => {
-    poly.reduce((a, c) => {
-        const nvalue = c[1];
-        const nkey = [];
-        c[0].forEach(e => {
-            if (evalmap.has(e)) nvalue *= evalmap.get(e);
+const evaluate = (poly, evalmap) =>  [...poly.keys()].reduce((a, c) => {
+        let nvalue = poly.get(c);
+        const nkey = c;
+        c.forEach(e => {
+            if (evalmap.hasOwnProperty(e)) nvalue *= evalmap[e];
             else nkey.push(e);
         });
         a.set(nkey, nvalue);
         a.delete(c[0]);
+        return a;
     }, new Map());
-}; 
+
 
 //returns the polynomial in the correct output format.
 const toList = (poly) => {
-    return poly.keys().sort().map(k => poly.get(k) + k.reduce((a, c) => a+'*'+b));
+    return [...poly.keys()].filter(k => poly.get(k) !== 0).sort().map(k => poly.get(k) + (k.length ? k.reduce((a, c) => a+'*'+c) : ''));
 }; 
 
-//returns the result of applying the binary operator represented by symbol to left and right.
-const combine = (left, right, symbol) => {
-    switch (symbol) {
-        case '+': return add(left, right);
-        case '*': return mul(left, right); 
-        case '-': return sub(left, right);
-        default: return null;    
-    }
-}
 //makes a new Poly represented by either the constant or free variable specified by expr.
 const make = (expr) => {
     const poly = new Map();
     if (!expr) return poly;
     if (/[0-9]/.test(expr.charAt(0))) {
-        map.set([], parseInt(expr));
+        poly.set([], parseInt(expr));
     } else {
-        map.set([expr], 1);
+        poly.set([expr], 1);
     }
     return poly;
 }; 
@@ -119,24 +91,25 @@ const cal = (res, pre, op, cur) => {
         res = add(res, pre);
         pre = cur;
     }
+    return {res, pre};
 };
 
 // parses an expression into a new Poly.
 const parse = (expr) => { // res pre op cur
     let res = pre = new Map(), cur, num = 0, op = add;
     const st = [];
-    for (const c of expr) {
+    for (const c of expr+'+') {
         if (c === ' ') continue;
         if (/[0-9]/.test(c)) {
             num = num * 10 + c;
         } else {
             if (num > 0){
                 cur = make(num + '');
-                cal(res, pre, cur);       
+                ({res, pre} = cal(res, pre, op, cur));      
             }
             if (/[a-z]/.test(c)) {
                 cur = make(c);
-                cal(res, pre, cur);
+                ({res, pre} = cal(res, pre, op, cur));
             }
             if (/[\+\-\*]/.test(c)) {
                 op = c === '+' ? add : (c === '-' ? sub : mul);
@@ -149,8 +122,9 @@ const parse = (expr) => { // res pre op cur
             if (c === ')') {
                 cur = add(res,pre);
                 ({res, pre, op} = st.shift());
-                cal(res, pre, op, cur);
+                ({res, pre} = cal(res, pre, op, cur));
             }
+            num = 0;
         }
     }
     return add(res, pre);
@@ -173,6 +147,18 @@ Space Complexity: O(N + M)O(N+M).
  */
 var basicCalculatorIV = function(expression, evalvars, evalints) {
     const evalMap = evalvars.reduce((a, c, i) => { a[c] = evalints[i]; return a; }, {});
-    return toList(evaluate(parse(expression), evalMap));
+    const poly = parse(expression);
+
+    const epoly = evaluate(poly, evalMap);
+    return toList(epoly);
 };
 
+
+
+console.info(basicCalculatorIV("e + 8 - a + 5", ["e"], [1]));  //Output: ["-1*a","14"]
+console.info(basicCalculatorIV("e - 8 + temperature - pressure", ["e", "temperature"], [1, 12]));  //Output: ["-1*pressure","5"]
+console.info(basicCalculatorIV("(e + 8) * (e - 8)", [], [])); //Output: ["1*e*e","-64"]
+console.info(basicCalculatorIV("7 - 7", [], [])); //Output: []
+console.info(basicCalculatorIV("a * b * c + b * a * c * 4", [], []));  //Output: ["5*a*b*c"]
+console.info(basicCalculatorIV("((a - b) * (b - c) + (c - a)) * ((a - b) + (b - c) * (c - a))", [], [])); 
+//Output: ["-1*a*a*b*b","2*a*a*b*c","-1*a*a*c*c","1*a*b*b*b","-1*a*b*b*c","-1*a*b*c*c","1*a*c*c*c","-1*b*b*b*c","2*b*b*c*c","-1*b*c*c*c","2*a*a*b","-2*a*a*c","-2*a*b*b","2*a*c*c","1*b*b*b","-1*b*b*c","1*b*c*c","-1*c*c*c","-1*a*a","1*a*b","1*a*c","-1*b*c"]

@@ -24,3 +24,8 @@ function createObject() {  //inside the function, "this" is decided by who calls
   }
   
 createObject.call({foo: 21}).bar(); // override `this` inside createObject
+
+
+const a = [1,2,3];
+const b = [1,2,3];
+console.info([1,2,3] == [1,2,3]);
