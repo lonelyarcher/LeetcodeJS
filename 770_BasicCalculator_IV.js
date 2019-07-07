@@ -28,108 +28,6 @@ Algorithm
 Each function is straightforward individually. Let's list the functions we use:
 */
 
-const add = (m1, m2) => { //returns the result of m1 + m2.
-    const ans = new Map(m2);
-    for(const [k, v] of m1.entries()) {
-        ans.set(k, (ans.get(k) || 0) + v); 
-    }
-    return ans;
-};
-
-const sub = (m1, m2) => { //returns the result of m1 - m2.
-    const ans = new Map(m2);
-    for(const [k, v] of m1.entries()) {
-        ans.set(k, (ans.get(k) || 0) - v); 
-    }
-    return ans;
-};
-
-const mul = (m1, m2) => { //returns the result of m1 * m2.
-    const ans = new Map();
-    for(const [k1, v1] of m1.entries()) {
-        for(const [k2, v2] of m1.entries()) {
-            ans = add(ans, [[k1.concat(k2).sort(), v1 * v2]])
-        }
-    }
-    return ans;
-}
-//returns the polynomial after replacing all free variables with constants as specified by evalmap.
-const evaluate = (poly, evalmap) =>  [...poly.keys()].reduce((a, c) => {
-        let nvalue = poly.get(c);
-        const nkey = c;
-        c.forEach(e => {
-            if (evalmap.hasOwnProperty(e)) nvalue *= evalmap[e];
-            else nkey.push(e);
-        });
-        a.set(nkey, nvalue);
-        a.delete(c[0]);
-        return a;
-    }, new Map());
-
-
-//returns the polynomial in the correct output format.
-const toList = (poly) => {
-    return [...poly.keys()].filter(k => poly.get(k) !== 0).sort().map(k => poly.get(k) + (k.length ? k.reduce((a, c) => a+'*'+c) : ''));
-}; 
-
-//makes a new Poly represented by either the constant or free variable specified by expr.
-const make = (expr) => {
-    const poly = new Map();
-    if (!expr) return poly;
-    if (/[0-9]/.test(expr.charAt(0))) {
-        poly.set([], parseInt(expr));
-    } else {
-        poly.set([expr], 1);
-    }
-    return poly;
-}; 
-
-const cal = (res, pre, op, cur) => {
-    if (op === mul) {
-        pre = mul(pre, cur);
-    } else {
-        res = add(res, pre);
-        pre = cur;
-    }
-    return {res, pre};
-};
-
-// parses an expression into a new Poly.
-const parse = (expr) => { // res pre op cur
-    let res = pre = new Map(), cur, num = 0, op = add;
-    const st = [];
-    for (const c of expr+'+') {
-        if (c === ' ') continue;
-        if (/[0-9]/.test(c)) {
-            num = num * 10 + c;
-        } else {
-            if (num > 0){
-                cur = make(num + '');
-                ({res, pre} = cal(res, pre, op, cur));      
-            }
-            if (/[a-z]/.test(c)) {
-                cur = make(c);
-                ({res, pre} = cal(res, pre, op, cur));
-            }
-            if (/[\+\-\*]/.test(c)) {
-                op = c === '+' ? add : (c === '-' ? sub : mul);
-            }
-            if (c === '(') {
-                st.unshift({res, pre, op});
-                res = pre = new Map();
-                op = add;
-            }
-            if (c === ')') {
-                cur = add(res,pre);
-                ({res, pre, op} = st.shift());
-                ({res, pre} = cal(res, pre, op, cur));
-            }
-            num = 0;
-        }
-    }
-    return add(res, pre);
-};
-
 /*
 Complexity Analysis
 
@@ -138,6 +36,109 @@ With an expression like (a + b) * (c + d) * (e + f) * ... the complexity is O(2^
 
 Space Complexity: O(N + M)O(N+M).
 */
+
+const add = (m1, m2) => { //returns the result of m1 + m2.
+    return Object.keys(m1).reduce((a, c) => { a[c] = (a[c] || 0) + m1[c]; return a; }, m2);
+};
+
+const mul = (m1, m2) => { //returns the result of m1 * m2.
+    let ans = {};
+    Object.keys(m1).forEach(k1 => {
+        Object.keys(m2).forEach(k2 => {
+            let nkey = '';
+            if (k1 === '') nkey = k2;
+            else if (k2 === '') nkey = k1;
+            else nkey = k1.split(',').concat(k2.split(',')).sort().join();
+            ans = add(ans, { [nkey]: m1[k1]*m2[k2] });
+        });
+    });
+    return ans;
+}
+//returns the polynomial after replacing all free variables with constants as specified by evalmap.
+const evaluate = (poly, evalmap) =>  Object.keys(poly).reduce((a, k) => {
+        let nvalue = poly[k];
+        const nkey = [];
+        k.split(',').forEach(e => {
+            if (evalmap.hasOwnProperty(e)) nvalue *= evalmap[e];
+            else nkey.push(e);
+        });
+        //delete(a[k]);
+        a = add(a, { [nkey.join()]: nvalue });
+        return a;
+    }, {});
+
+
+//returns the polynomial in the correct output format.
+const toList = poly => {
+    return Object.keys(poly).filter(k => poly[k] !== 0).sort((a, b) => -(a ? a.split(',').length : 0) + (b ? b.split(',').length : 0) || (a > b ? 1 : -1)).map(k => k ? [poly[k], ...k.split(',')].join('*') : poly[k] + '');
+}; 
+
+//makes a new Poly represented by either the constant or free variable specified by expr.
+const make = (expr) => {
+    const poly = {};
+    if (expr === 0) return {'': 0};
+    if (!expr) return {};
+    if (/[0-9]/.test(expr.charAt(0))) {
+        poly[''] = parseInt(expr);
+    } else {
+        poly[expr] = 1;
+    }
+    return poly;
+
+}; 
+
+const cal = (res, pre, op, cur) => {
+    if (op === mul) {
+        pre = mul(pre, cur);
+    } else {
+        res = add(res, pre);
+        pre = op === add ? cur : mul({ '': -1 }, cur);
+    } 
+    return {res, pre};
+};
+
+// parses an expression into a new Poly.
+const parse = (expr) => { // res pre op cur
+    let res = pre = {}, cur, num = 0, readNum = false, x = '', op = add;
+    const st = [];
+    for (const c of expr+'+') {
+        if (c === ' ') continue;
+        if (/[0-9]/.test(c)) {
+            num = num * 10 + parseInt(c);
+            readNum = true;
+        } else if (/[a-z]/.test(c)) {
+            x += c;
+        } else {
+            if (readNum){
+                cur = make(num + '');
+                ({res, pre} = cal(res, pre, op, cur));      
+            }
+            if (x.length) {
+                cur = make(x);
+                ({res, pre} = cal(res, pre, op, cur));
+            }
+            if (/[\+\-\*]/.test(c)) {
+                op = c === '+' ? add : (c === '-' ? 'sub' : mul);
+            }
+            if (c === '(') {
+                st.unshift({res, pre, op});
+                res = pre = {};
+                op = add;
+            }
+            if (c === ')') {
+                cur = add(res, pre);
+                ({res, pre, op} = st.shift());
+                ({res, pre} = cal(res, pre, op, cur));
+            }
+            num = 0;
+            readNum = false;
+            x = '';
+        }
+    }
+    return add(res, pre);
+};
+
+
 
 /**
  * @param {string} expression
@@ -153,8 +154,12 @@ var basicCalculatorIV = function(expression, evalvars, evalints) {
     return toList(epoly);
 };
 
+const expr = "11 - 1 - bx * 0 - 10";
+const varlist = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "aa", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "aj", "ak", "al", "am", "an", "ao", "ap", "aq", "ar", "as", "at", "au", "av", "aw", "ax", "ay", "az", "ba", "bb", "bc", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bk", "bl", "bm", "bn", "bo", "bp", "bq", "br", "bs", "bt", "bu", "bv", "bw", "bx", "by", "bz", "ca", "cb", "cc", "cd", "ce", "cf", "cg", "ch", "ci", "cj", "ck", "cl", "cm", "cn", "co", "cp", "cq", "cr", "cs", "ct", "cu", "cv"];
+const numlist = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+console.info(basicCalculatorIV(expr, varlist, numlist));  //Output: ["-1*a","14"]
 
-
+console.info(basicCalculatorIV("137", ["e"], []));  //Output: ["-1*a","14"]
 console.info(basicCalculatorIV("e + 8 - a + 5", ["e"], [1]));  //Output: ["-1*a","14"]
 console.info(basicCalculatorIV("e - 8 + temperature - pressure", ["e", "temperature"], [1, 12]));  //Output: ["-1*pressure","5"]
 console.info(basicCalculatorIV("(e + 8) * (e - 8)", [], [])); //Output: ["1*e*e","-64"]
