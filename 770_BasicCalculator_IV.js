@@ -38,7 +38,11 @@ Space Complexity: O(N + M)O(N+M).
 */
 
 const add = (m1, m2) => { //returns the result of m1 + m2.
-    return Object.keys(m1).reduce((a, c) => { a[c] = (a[c] || 0) + m1[c]; return a; }, m2);
+    return Object.keys(m1).reduce((a, c) => { 
+        a[c] = (a[c] || 0) + m1[c]; 
+        if (a[c] === 0) delete(a[c]); 
+        return a; 
+    }, m2);
 };
 
 const mul = (m1, m2) => { //returns the result of m1 * m2.
@@ -50,6 +54,7 @@ const mul = (m1, m2) => { //returns the result of m1 * m2.
             else if (k2 === '') nkey = k1;
             else nkey = k1.split(',').concat(k2.split(',')).sort().join();
             ans = add(ans, { [nkey]: m1[k1]*m2[k2] });
+            if (ans[nkey] === 0) delete(ans[nkey]);
         });
     });
     return ans;
@@ -64,6 +69,7 @@ const evaluate = (poly, evalmap) =>  Object.keys(poly).reduce((a, k) => {
         });
         //delete(a[k]);
         a = add(a, { [nkey.join()]: nvalue });
+        if (a[nkey] === 0) delete(a[nkey]);
         return a;
     }, {});
 
@@ -76,7 +82,6 @@ const toList = poly => {
 //makes a new Poly represented by either the constant or free variable specified by expr.
 const make = (expr) => {
     const poly = {};
-    if (expr === 0) return {'': 0};
     if (!expr) return {};
     if (/[0-9]/.test(expr.charAt(0))) {
         poly[''] = parseInt(expr);

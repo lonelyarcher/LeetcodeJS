@@ -31,3 +31,11 @@ The instanceof operator tests whether the prototype property of a constructor ap
 
 Java, arraylist equals arraylist if both same length and each elements are equal
 But in Javascript, no such rule, object are compared only by reference.
+
+15
+
+Every JavaScript object has an internal "prototype" property, often called [[prototype]], which points to the object from which it directly inherits. This is exposed in FF and Chrome by the non-standard __proto__ property. Object.getPrototypeOf is a getter for this internal property.
+
+Every JavaScript function [object] has a property prototype, which is initialized with an [nearly] empty object. When you create a new instance of this function by calling it as a constructor, the [[prototype]] of that new object will point to the constructor's prototype object.
+
+If you get the [[prototype]] of a function (every function is an object, so it has one), it will result in the Function.prototype object from which functions inherit their methods (like bind, call, apply etc).
