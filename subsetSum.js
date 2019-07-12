@@ -15,7 +15,7 @@ const subsetSum = arr => {
     const sum = arr.reduce((a, c) => a + c);
     if (sum & 1 === 1) return false;
     const target = sum/2;
-    const cache = Array(arr.length + 1).fill(Array(target + 1).fill(undefined));
+    const cache = [...Array(arr.length + 1)].map(r => Array(target + 1).fill(undefined));
     return helper(arr, arr.length, sum/2, cache);
 };
 
