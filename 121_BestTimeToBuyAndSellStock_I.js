@@ -23,7 +23,6 @@ Explanation: In this case, no transaction is done, i.e. max profit = 0.
  */
 var maxProfit = function(prices) {
     let min = Infinity, max = 0;
-    
     for (let p of prices) {
         min = Math.min(min, p);
         max = Math.max(max, p - min);
