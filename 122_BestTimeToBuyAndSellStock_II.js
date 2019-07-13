@@ -28,6 +28,6 @@ Explanation: In this case, no transaction is done, i.e. max profit = 0.*/
  * @return {number}
  */
 var maxProfit = function(prices) {
-    return prices.reduce((a, c, i) => c > prices[i - 1] ? a + c - prices[i - 1] : a, 0);
+    return prices.reduce((a, c, i) => i > 0 && c > prices[i - 1] ? a + c - prices[i - 1] : a, 0);
 };
 console.log(maxProfit([1, 2, 5, 3, 4]));
