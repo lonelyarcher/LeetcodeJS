@@ -13,21 +13,19 @@ You may not engage in multiple transactions at the same time (ie, you must sell 
  * @return {number}
  */
 var maxProfit = function(k, prices) {
-    const cache = [...Array(prices.length + 1)].map(r => Array(k + 1).fill(undefined));
-    const helper = (n, m, cache) => {
-        if (n <= 1 || m === 0) return 0;
-        if (cache[n][m]) return cache[n][m];
-        let max = prices[n - 1] - prices[0];
-        for (let i = 0; i < n - 1; i++) {
-            max = 
+    if(!prices.length || k === 0) return 0;
+    if(k>=prices.length/2) return prices.reduce((a, c, i) => i > 0 && c > prices[i - 1] ? a + c - prices[i - 1] : a, 0);
+    const sell = Array(k + 1).fill(0);
+    const buy = Array(k + 1).fill(-prices[0]);
+    for (let i = 1; i < prices.length; i++) {
+        for (let j = 1; j <= k; j++) {
+            const nSell = Math.max(sell[j], prices[i] + buy[j]);
+            const nBuy = Math.max(buy[j], -prices[i] + sell[j - 1]);
+            sell[j] = nSell;
+            buy[j] = nBuy;
         }
-        cache[n][m] = Math.max(max, helper(n - 1, m, cache));
-        return cache[n][m];
     }
-    
-    const ans = helper(prices.length, k, cache);
-    //console.log(cache.join('\n'));
-    return ans;
+    return sell[k];
 };
 
 console.log(maxProfit(k = 2, [2,4,1])); //2.
