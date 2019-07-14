@@ -1,5 +1,5 @@
 
-
+// arrow function in class need babel setting: transform-class-properties, which make those arrow functions are properties of class which the type is funciton.
 class MyPromise {
 
     constructor(execFunc) {
@@ -7,7 +7,7 @@ class MyPromise {
         this.handleError = () => {};
         this.resolve = this.resolve.bind(this);
         this.reject = this.reject.bind(this);
-        execFunc(this.resolve, this.reject);
+        setTimeout(() => {execFunc(this.resolve, this.reject);}, 0); // put the execFunc into 'event stack' from 'execution stack' run the promiseChain after run then(), which add the next callback into the chain.
     };
 
     resolve(data){
@@ -42,7 +42,7 @@ const fakeApi = () => {
         name: 'John',
         age: 20,
     }
-    if (Math.random() > 0.5) {
+    if (Math.random() > 0.1) {
         return {
             user,
             statusCode: 200,
@@ -55,15 +55,15 @@ const fakeApi = () => {
     }
 };
 
-const apiCall = () => new Promise((resolve, reject) => {
-    setTimeout(() => {
+const apiCall = () => new MyPromise((resolve, reject) => {
+    
         const response = fakeApi();
         if (response.statusCode !== 200) {
             reject(response);
         } else {
             resolve(response);
         }
-    }, 3000);
+
 });
 
 apiCall().then(response => {
@@ -72,3 +72,15 @@ apiCall().then(response => {
 }).then(user => {
     console.log(`the fetched user is ${user.age} year old.`);
 }).catch(err => {console.log(err.message)});
+console.log("while fetching...");
+console.log("while fetching...");
+console.log("while fetching...");
+console.log("while fetching...");
+console.log("while fetching...");
+console.log("while fetching...");
+console.log("while fetching...");
+
+console.log("while fetching...");
+console.log("while fetching...");
+console.log("while fetching...");
+
