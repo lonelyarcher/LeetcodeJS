@@ -11,7 +11,7 @@ class MyPromise {
     };
 
     resolve(data){
-        const nextResult = data;
+        let nextResult = data;
         try {
             this.promiseChain.forEach(cb => {
                 nextResult = cb(nextResult);
