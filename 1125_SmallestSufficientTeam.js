@@ -21,7 +21,7 @@ It is guaranteed a sufficient team exists. */
  * @return {number[]}
  */
 //dfs
-var smallestSufficientTeam = function(req_skills, people) {
+var smallestSufficientTeam_DFS = function(req_skills, people) {
     const map = req_skills.reduce((a, c, i) => { a[c] = 1 << i; return a; }, {});
     const req = (1 << req_skills.length) - 1; // '<<' precedence after '+-', &^| more lower, but !~ higher than */ 
     const pskills = people.map(person => person.reduce((a, c) => a|map[c], 0));
@@ -51,22 +51,22 @@ var smallestSufficientTeam = function(req_skills, people) {
 // };
 
 //dp with status compression (by bit operation to an integer)
-// var smallestSufficientTeam = function(req_skills, people) {
-//     const req = 1 << req_skills.length;
-//     const map = req_skills.reduce((a, c, i) => { a[c] = 1 << i; return a; }, {});
-//     const p = people.map(person => person.reduce((a, c) => a|map[c], 0));
-//     const dp = [...Array(req)].map(r => Array(p.length + 1).fill(undefined));
-//     dp[0] = Array(p.length + 1).fill([]); 
-//     for (let i = 1; i < req; i++) {
-//         for (let j = 1; j <= people.length; j++) {
-//             const noPick = dp[i][j - 1] ? dp[i][j - 1].length : Infinity;
-//             const ni = i ^ (i & p[j - 1]);
-//             const pick = dp[ni][j - 1] ? dp[ni][j - 1].length + 1: Infinity;
-//             dp[i][j] = noPick <= pick ? dp[i][j - 1] : dp[ni][j - 1].concat([j - 1]);
-//         }
-//     }
-//     return dp[req - 1][p.length];
-// };
+var smallestSufficientTeam_DP = function(req_skills, people) {
+    const req = 1 << req_skills.length;
+    const map = req_skills.reduce((a, c, i) => { a[c] = 1 << i; return a; }, {});
+    const p = people.map(person => person.reduce((a, c) => a|map[c], 0));
+    const dp = [...Array(req)].map(r => Array(p.length + 1).fill(undefined));
+    dp[0] = Array(p.length + 1).fill([]); 
+    for (let i = 1; i < req; i++) {
+        for (let j = 1; j <= people.length; j++) {
+            const noPick = dp[i][j - 1] ? dp[i][j - 1].length : Infinity;
+            const ni = i ^ (i & p[j - 1]);
+            const pick = dp[ni][j - 1] ? dp[ni][j - 1].length + 1: Infinity;
+            dp[i][j] = noPick <= pick ? dp[i][j - 1] : dp[ni][j - 1].concat([j - 1]);
+        }
+    }
+    return dp[req - 1][p.length];
+};
 
 
 
