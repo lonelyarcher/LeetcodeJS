@@ -20,7 +20,7 @@ It is guaranteed a sufficient team exists. */
  * @param {string[][]} people
  * @return {number[]}
  */
-//dfs
+//dfs O(2^People.length)
 var smallestSufficientTeam_DFS = function(req_skills, people) {
     const map = req_skills.reduce((a, c, i) => { a[c] = 1 << i; return a; }, {});
     const req = (1 << req_skills.length) - 1; // '<<' precedence after '+-', &^| more lower, but !~ higher than */ 
@@ -46,11 +46,30 @@ var smallestSufficientTeam_DFS = function(req_skills, people) {
 };
 
 //bfs
-// var smallestSufficientTeam = function(req_skills, people) {
-    
-// };
+var smallestSufficientTeam = function(req_skills, people) {
+    const map = req_skills.reduce((a, c, i) => { a[c] = 1 << i; return a; }, {});
+    const req = (1 << req_skills.length) - 1; // '<<' precedence after '+-', &^| more lower, but !~ higher than */ 
+    const pskills = people.map(person => person.reduce((a, c) => a|map[c], 0));
+    const queue = [0, []];
+    const visited = new Set();
+    visited.add(0);
+    while (queue.length) {
+        if (queue[queue.length - 1][0] === req) {
+            return queue[queue.length - 1][1];
+        }
+        const pre = queue.pop();
+        pskills.forEach((p, i) => {
+            if (pre[0]|p > pre[0] && !visited.contains(pre[0]|p)) {
+                visited.add(pre[0]|p);
+                queue.unshift([pre[0]|p, [...pre[1],i]]);
+            }
+        });
+    }
 
-//dp with status compression (by bit operation to an integer)
+    return null;    
+};
+
+//dp with status compression (by bit operation to an integer) O(2^16*people*length)
 var smallestSufficientTeam_DP = function(req_skills, people) {
     const req = 1 << req_skills.length;
     const map = req_skills.reduce((a, c, i) => { a[c] = 1 << i; return a; }, {});
