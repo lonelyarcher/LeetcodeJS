@@ -26,24 +26,23 @@ var maxProfit = function(k, prices) {
     return sell[prices.length][k];
 };
 
-var maxProfit_optimization = function(k, prices) {
+var maxProfit_optimization = function(k, prices) { //reduce the dimension to save the space
     if(!prices.length || k === 0) return 0;
     if(k>=prices.length/2) return prices.reduce((a, c, i) => i > 0 && c > prices[i - 1] ? a + c - prices[i - 1] : a, 0);
     const sell = Array(k + 1).fill(0);
     const buy  = Array(k + 1).fill(-prices[0]);
-    for (let i = 1; i <= prices.length; i++) {
-        for (let j = 1; j <= k; j++) {
-            const nbuy  = Math.max(buy[j],  -prices[i] + sell[j - 1]);
-            const nsell = Math.max(sell[j], prices[i] + buy[j]);
-            buy[j] = nbuy;
-            sell[j] = nsell; 
+    for (let i = 1; i < prices.length; i++) {
+        for (let j = k; j > 0; j--) { //backward, because buy[j] depends on sell[j - 1] which should be last sell[i - 1][j - 1]
+            sell[j] = Math.max(sell[j], prices[i] + buy[j]); //calculate sell[j] first, because it depends on buy[j], but buy[j] didn't depends on sell[j]
+            buy[j]  = Math.max(buy[j],  -prices[i] + sell[j - 1]);
         }
     }
     return sell[k];
 };
 
-console.log(maxProfit(k = 2, [2,4,1])); //2.
-console.log(maxProfit(k = 2, [3,2,6,5,0,3])); //Output: 7
-console.log(maxProfit(k = 2, [2,1,4,5,2,9,7])); //Output: 11
-console.log(maxProfit(k = 2, [3,3,5,0,0,3,1,4])); //6
+//console.log(maxProfit(k = 2, [2,4,1])); //2.
+console.log(maxProfit_optimization(k = 2, [2,1,2,0,1])); //2
+//console.log(maxProfit(k = 2, [3,2,6,5,0,3])); //Output: 7
+//console.log(maxProfit(k = 2, [2,1,4,5,2,9,7])); //Output: 11
+//console.log(maxProfit(k = 2, [3,3,5,0,0,3,1,4])); //6
 
