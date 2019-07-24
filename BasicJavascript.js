@@ -1,0 +1,12 @@
+console.log(undefined === undefined);
+console.log(undefined == null);
+console.log(null === null);
+console.log(NaN == NaN);
+console.log(typeof null);
+console.log(typeof undefined);
+console.log(typeof NaN);
+console.log(typeof []);
+console.log([] instanceof Array);
+console.log([] instanceof Object);
+console.log((x => x) instanceof Function);
+console.log([1,2,3][-1]);
