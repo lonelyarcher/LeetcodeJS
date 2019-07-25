@@ -25,5 +25,13 @@ Note:
  * @return {number}
  */
 var maxProfit = function(prices, fee) {
-    
+    const n = prices.length;
+    if (n === 0) return 0;
+    const sell = [0];
+    const buy = [-prices[0]];
+    for (let i = 1; i < n; i++) {
+        sell[i] = Math.max(sell[i - 1], prices[i] - fee + buy[i - 1]);
+        buy[i] = Math.max(buy[i - 1], -prices[i] + sell[i - 1]);
+    }
+    return sell[n - 1];
 };
