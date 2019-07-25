@@ -37,6 +37,49 @@ expression is a valid expression representing a boolean, as given in the descrip
  * @param {string} expression
  * @return {boolean}
  */
+const or = (a, b) => a || b;
+const and = (a, b) => a && b;
+const not = a => !a;
+const map = { '!': not, '&': and, '|': or }
 var parseBoolExpr = function(expression) {
-    
+    let op = or, cur = false;
+    const st = [];
+    for (c of [...expression]) {
+        if (c === '&') {
+            st.unshift([op, cur]);
+            op = and;
+            cur = true;
+        } else if (c === '|') {
+            st.unshift([op, cur]);
+            op = or;
+            cur = false;
+        } else if (c === '!') {
+            st.unshift([op, cur]);
+            op = not;
+            cur = null;
+        } else if (c === ')'){
+            const [preop, precur] = st.shift();
+            cur = preop === not ? !cur : preop.call(null, precur, cur);
+            op = preop; //mistake, I forget when pop out op then I need set current op to it.
+        } else if (/[tf]/.test(c)) {
+            const ncur = c === 't' ? true : false;
+            if (op === not) {
+                cur = !ncur;
+            } else {
+                cur = op.call(null, cur, ncur);
+            }
+        }
+    }
+    return cur ? true : false;
 };
+
+console.log(parseBoolExpr('&(f,&( f,f,|(f)),t)')); //false
+
+console.log(parseBoolExpr('|(&(t,f,t),!(t))')); //false
+console.log(parseBoolExpr('!(!(t))')); //true
+console.log(parseBoolExpr('!( &(f,&( f,f,|(f)),t) )')); //true
+console.log(parseBoolExpr('|(f)')); //false
+console.log(parseBoolExpr('&(f)')); //false
+console.log(parseBoolExpr('|(t)')); //true
+console.log(parseBoolExpr('&( f,f,|(f) )')); //false
+console.log(parseBoolExpr('t')); //true
