@@ -12,10 +12,12 @@ Could you do both operations in O(1) time complexity?
  * @param {number} capacity
  */
 var LFUCache = function(capacity) {
-    this.freq = {};
-    this.cache = {};
-    this.keys = {};
-    this.minF = 0;
+    this.freq = {}; //a map save each keys frequency, get +1, put also +1
+    this.cache = {}; //a map to save the key value pair for cache 
+    this.keys = {};  //a map to save a key set for each frequency, like freqency 1: {1, 2}, 
+    // set in javascript will keep the insert order, so we can use a iterator to get the oldest element to be remove.
+    // this map will have the size of max frequency, but we can still access it by O(1) if we know the frequence.
+    this.minF = 0; //record the minimum frequency, so we can remove the elements when reaching capacity.
     this.capacity = capacity;
 };
 
@@ -23,11 +25,11 @@ var LFUCache = function(capacity) {
  * @param {number} key
  * @return {number}
  */
-LFUCache.prototype.get = function(key) {
+LFUCache.prototype.get = function(key) { //O(1) time
     if (!this.cache.hasOwnProperty(key) || this.capacity === 0) return -1;
     this.freq[key] = this.freq[key] + 1;
     this.keys[this.freq[key] - 1].delete(key);
-    if (this.keys[this.freq[key] - 1].size === 0 && this.freq[key] - 1 === this.minF) {
+    if (this.keys[this.freq[key] - 1].size === 0 && this.freq[key] - 1 === this.minF) { //when the mini frequency set is empty, we remove it from the map and increase the mini frequency by 1
         delete this.keys[this.minF];
         this.minF++;
     }
@@ -41,21 +43,21 @@ LFUCache.prototype.get = function(key) {
  * @param {number} value
  * @return {void}
  */
-LFUCache.prototype.put = function(key, value) {
+LFUCache.prototype.put = function(key, value) { //O(1) time
     if (this.capacity === 0) return;
-    if (!this.cache.hasOwnProperty(key)) {
-        if (Object.keys(this.cache).length >= this.capacity) {
-            const removeKey = this.keys[this.minF].values().next().value;
+    if (!this.cache.hasOwnProperty(key)) {  //hasOwnProperty
+        if (Object.keys(this.cache).length >= this.capacity) { 
+            const removeKey = this.keys[this.minF].values().next().value; //set has its inserting order, so use iterator(values())'s next funciton to return object {value, done}
             this.keys[this.minF].delete(removeKey);
             delete this.cache[removeKey];
             delete this.freq[removeKey];
         }
-        this.minF = 1;
-        this.freq[key] = 1;
+        this.minF = 1; //after insert new key, mini frequence must reset to 1
+        this.freq[key] = 1; 
         this.keys[1] = this.keys[1] || new Set();
         this.keys[1].add(key);
     } else {
-        this.get(key);
+        this.get(key); //if updating existing key, we do a get operation to increase frequency and move the key to the end of set which means it is recently visited.
     }
     this.cache[key] = value;
 };
