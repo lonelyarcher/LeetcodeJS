@@ -27,9 +27,10 @@ var LFUCache = function(capacity) {
  */
 LFUCache.prototype.get = function(key) { //O(1) time
     if (!this.cache.hasOwnProperty(key) || this.capacity === 0) return -1;
-    this.freq[key] = this.freq[key] + 1;
-    this.keys[this.freq[key] - 1].delete(key);
-    if (this.keys[this.freq[key] - 1].size === 0 && this.freq[key] - 1 === this.minF) { //when the mini frequency set is empty, we remove it from the map and increase the mini frequency by 1
+    const prevKey = this.freq[key];
+    this.freq[key] = prevKey + 1;
+    this.keys[prevKey].delete(key);
+    if (this.keys[prevKey].size === 0 && prevKey === this.minF) { //when the mini frequency set is empty, we remove it from the map and increase the mini frequency by 1
         delete this.keys[this.minF];
         this.minF++;
     }
@@ -47,7 +48,7 @@ LFUCache.prototype.put = function(key, value) { //O(1) time
     if (this.capacity === 0) return;
     if (!this.cache.hasOwnProperty(key)) {  //hasOwnProperty
         if (Object.keys(this.cache).length >= this.capacity) { 
-            const removeKey = this.keys[this.minF].values().next().value; //set has its inserting order, so use iterator(values())'s next funciton to return object {value, done}
+            const removeKey = this.keys[this.minF].values().next().value; //Set in javascript keeps its inserting order, so use Set iterator(values())'s next funciton to return the first object {value, done}
             this.keys[this.minF].delete(removeKey);
             delete this.cache[removeKey];
             delete this.freq[removeKey];
