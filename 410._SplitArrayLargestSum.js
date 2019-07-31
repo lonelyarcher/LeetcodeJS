@@ -62,6 +62,7 @@ var splitArray_DP = function(nums, m) {
 };
 //binary search and greedy, time: n * O(log(sum of nums))
 var splitArray = function(nums, m) {
+    if (m > nums.length) return null;
     const split = (maxSum) => {
         let g = 1, sum = 0;
         for (let n of nums) {
@@ -74,7 +75,7 @@ var splitArray = function(nums, m) {
         return g;
     };
     let l = Math.max(...nums), r = nums.reduce((a, c) => a + c);
-    while (r - l > 1) { //binary template, stop at r = l + 1
+    while (r - l > 1) { 
         const mid = parseInt(l + (r - l) / 2, 10);
         if (split(mid) <= m) {  // small or equal are good for this maxSum
             r = mid;
@@ -82,7 +83,7 @@ var splitArray = function(nums, m) {
             l = mid + 1; // larger than m, then maxSum is too small.
         }
     }
-    return split(l) <= m ? l : r; //if l satisfy then l , otherwise r, because l < r;
+    return split(l) <= m ? l : r; //because we know it must have answer, so try small one: l first, if l good, return l , otherwise return r.
 };
 
 
