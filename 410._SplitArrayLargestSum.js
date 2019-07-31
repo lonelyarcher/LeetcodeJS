@@ -24,7 +24,7 @@ Three solution, dfs time O(n^m) space O(n), dp time O(n^2*m) space O(n*m), binar
  * @param {number} m
  * @return {number}
  */
-//dfs
+//dfs exponential, 2^n
 var splitArray_dfs_brute_force = function(nums, m) {
     const n = nums.length;
     if (n === 0) return 0;
@@ -40,7 +40,7 @@ var splitArray_dfs_brute_force = function(nums, m) {
     dfs(1, 1, nums[0], nums[0]);
     return ans;
 };
-//dp
+//dp, time n^2*m
 var splitArray_DP = function(nums, m) {
     const dp = [...Array(nums.length + 1)].map(() => Array(m + 1).fill(undefined));//begin with all undefined
     dp[0] = Array(m + 1).fill(0); //for empty array, the split sum is zero
@@ -60,9 +60,29 @@ var splitArray_DP = function(nums, m) {
     }
     return dp[nums.length][m];
 };
-//binary search and greedy
+//binary search and greedy, time: n * O(log(sum of nums))
 var splitArray = function(nums, m) {
-    
+    const split = (maxSum) => {
+        let g = 1, sum = 0;
+        for (let n of nums) {
+            if (sum + n > maxSum) {
+                sum = 0;
+                g++;
+            }
+            sum += n;
+        }
+        return g;
+    };
+    let l = Math.max(...nums), r = nums.reduce((a, c) => a + c);
+    while (r - l > 1) { //binary template, stop at r = l + 1
+        const mid = parseInt(l + (r - l) / 2, 10);
+        if (split(mid) <= m) {  // small or equal are good for this maxSum
+            r = mid;
+        } else {
+            l = mid + 1; // larger than m, then maxSum is too small.
+        }
+    }
+    return split(l) <= m ? l : r; //if l satisfy then l , otherwise r, because l < r;
 };
 
 
