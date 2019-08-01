@@ -53,9 +53,9 @@ var shortestSuperstring_dfs = function(A) {
 };
 
 //dp
-var shortestSuperstring = function(A) {
+var shortestSuperstring_dp = function(A) {
     const n = A.length;
-    const dist = [...Array(n)].map(() => Array(n).fill(undefined));
+    const dist = [...Array(n)].map(() => Array(n).fill(''));
     for (let i = 0; i < A.length; i++) {
         for (let j = 0; j < A.length; j++) {
             dist[i][j] = A[j];
@@ -65,9 +65,8 @@ var shortestSuperstring = function(A) {
         }
     }
     console.log(dist.map(r => r.join()).join("|"));
-    const full = A.reduce((a, c) => a + c);
     const dp = [...Array(1<<n)].map(()=>Array(n).fill(undefined));
-    dp[0] = Array(n).fill(''); 
+    A.forEach((a, i) => dp[1<<i][i] = a);
     //upgrade dimension, put the last word in the second dimension j, dp[i][j] i is the state of combination, j is the last word index of this combination.
     for (let i = 1; i < (1<<n); i++) {
         for (let j = 0; j < n; j++) {
@@ -75,7 +74,7 @@ var shortestSuperstring = function(A) {
                 for (let k = 0; k < n; k++) {
                     if (((i - (1<<j)) & (1<<k)) > 0) {
                         const nij = dp[i - (1<<j)][k] + dist[k][j];
-                        if (!dp[i][j] || nij.length < dp[i][j]) dp[i][j] = nij;
+                        if (!dp[i][j] || nij.length < dp[i][j].length) dp[i][j] = nij;
                     }
                 }
             }
@@ -84,4 +83,41 @@ var shortestSuperstring = function(A) {
     return dp[(1<<n) - 1].reduce((a, c) => c ? (c.length < a.length ? c : a) : a);
 };
 
-console.log(shortestSuperstring(["catg","ctaagt","gcta","ttca","atgcatc"]));  //"gctaagttcatgcatc"
+//memorized search
+var shortestSuperstring_memo = function(A) {
+    const n = A.length;
+    const join = [...Array(n)].map(() => Array(n).fill(''));
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            join[i][j] = A[j];
+            for (let k = 1; k <= A[i].length; k++) {
+                if (A[i].slice(-k) === A[j].slice(0,k)) join[i][j] = A[j].slice(k);
+            }
+        }
+    }
+    const m = [...Array(1<<n)].map(()=>Array(n).fill(undefined));
+    
+    const search = (i, j) => {
+        if (i === 2**j) return A[j];
+        if (m[i][j]) return m[i][j];
+        for (let k = 0; k < n; k++) {
+            if (((i - 2**j) & 2**k) > 0) {
+                const nj = search(i - 2**j, k) + join[k][j];
+                if (!m[i][j] || nj.length < m[i][j].length) m[i][j] = nj;
+            }
+        }
+        return m[i][j];
+    };
+    
+    let ans = A.reduce((a, c) => a + c);
+    for (let j = 0; j < n; j++) {
+        m[2**n - 1][j] = search(2**n - 1, j);
+        //console.log(m[2**n - 1][j]);
+        if (m[2**n - 1][j].length < ans.length) ans = m[2**n - 1][j];
+    }
+    return ans;
+};
+
+
+
+console.log(shortestSuperstring_memo(["catg","ctaagt","gcta","ttca","atgcatc"]));  //"gctaagttcatgcatc"
