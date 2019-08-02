@@ -17,3 +17,9 @@ let op = (a, b) => a + b;
 st.unshift(op); //pass by value, the reference of function
 op = (a, b) => a - b; //change outside reference will not affect the inside passed function.
 console.log(st.shift().call(null, 4, 2)); //4 + 2 = 6
+
+const arr1 = [...Array(5)].map((v, i) => i);
+const arr2 = Array(5).fill([]); //bad, same object filled into all the arr2 elements.
+arr2[0].push(1,2,3); //all the arr2 rows was pushed with 1,2,3
+console.log(arr1);
+console.log(arr2.map(v => v.join()).join('|'));

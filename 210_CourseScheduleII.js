@@ -30,5 +30,25 @@ You may assume that there are no duplicate edges in the input prerequisites. */
  * @return {number[]}
  */
 var findOrder = function(numCourses, prerequisites) {
-    
+    const adj = Array(numCourses).fill(0).map(() => []), indegrees = Array(numCourses).fill(0);
+    for (let [c1, c2] of prerequisites) {
+        adj[c2].push(c1);
+        indegrees[c1]++;
+    }
+    const queue = [], order = [];
+    indegrees.forEach((v, i) => {
+        if (v === 0) queue.push(i);
+    });
+    while (queue.length){
+        const v = queue.shift();
+        adj[v].forEach(nv => {
+            indegrees[nv]--;
+            if (indegrees[nv] === 0) queue.push(nv);
+        });
+        order.push(v);
+    }
+    return order.length === numCourses ? order : []; 
+    //if order is not covering all the vertex, then means impossible to complete, return empty array
 };
+
+console.log(findOrder(4, [[1,0],[2,0],[3,1],[3,2]])); //[0,1,2,3] or [0,2,1,3]))
