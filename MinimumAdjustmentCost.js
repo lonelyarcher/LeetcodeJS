@@ -8,22 +8,18 @@ Return 2. */
 
 const miniAdjustmentCost = (A, a) => {
     const n = A.length;
-    const dp = Array(n).fill(0).map(() => Array(100).fill(Infinity));
-    const minAdj = (i, t) => {
-        const diff = Math.abs(A[i] - t) - a;
-        return diff < 0 ? 0 : diff;
-    };
-    dp[0] = Array(100).fill(0).map((c, i) => minAdj(0, i));
-    console.log(dp[0].join());
-    for (let i = 1; i < n; i++) {
+    const dp = Array(n + 1).fill(0).map(() => Array(100).fill(Infinity)); 
+    //best go to arr.length+1, so 0 means nothing, 1 means one element arr[0], n means with all the elements in arr which length is n.
+    dp[0] = Array(100).fill(0);
+    for (let i = 1; i <= n; i++) {
         for (let j = 1; j < 100; j++) {
             for (let k = Math.max(j - a, 1); k < Math.min(j + a, 99); k++) {
-                dp[i][j] = Math.min(dp[i - 1][k] + minAdj(i, j), dp[i][j]);
+                dp[i][j] = Math.min(dp[i - 1][k] + Math.abs(j - A[i - 1]), dp[i][j]);
             }
         }
     }
-    console.log(dp[n - 1].join());
-    return dp[n - 1][A[n - 1]];
+    //console.log(dp.map(r => r.join()).join('|'));
+    return dp[n][A[n - 1]];
 };
 
-console.log(miniAdjustmentCost([1,4,2,3], 1));
+console.log(miniAdjustmentCost([1,4,2,3], 1)); //2
