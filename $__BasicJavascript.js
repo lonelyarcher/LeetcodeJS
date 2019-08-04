@@ -23,3 +23,9 @@ const arr2 = Array(5).fill([]); //bad, same object filled into all the arr2 elem
 arr2[0].push(1,2,3); //all the arr2 rows was pushed with 1,2,3
 console.log(arr1);
 console.log(arr2.map(v => v.join()).join('|'));
+
+//destructing assignment:
+let {x: {y}, z} = {x: {}, z: 7} ;
+console.log(y);
+//destructing assignment without delaration, add parenthesis
+({x, z} = {x:1, y:2});
