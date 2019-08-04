@@ -64,8 +64,34 @@ Please remember to RESET your class variables declared in class AutocompleteSyst
  * @param {string[]} sentences
  * @param {number[]} times
  */
+const TNode = function() {
+    this.children = {};
+    this.word = null;
+    this.rank = 0;
+}
+
 var AutocompleteSystem = function(sentences, times) {
-    
+    this.root = new TNode();
+    this.add = function(s, node) {
+        for (let c of s) {
+            node.children[c] = node.children[c] || new TNode();
+            node = node.children[c];
+        }
+        node.word = s;
+        return node;
+    };
+    this.search = function(node) { //search the node and all its children and grandchildren and so on ...
+        let ans = [];
+        if (!node) return ans;
+        if (node.word) ans.push([node.word, node.rank]); //check node is word or not
+        Object.values(node.children).forEach(v => {
+           ans = ans.concat(this.search(v)); //recursion to its children, concat the result list
+        });
+        return ans;
+    }
+    sentences.forEach((s, i) => {this.add(s, this.root).rank = times[i];});
+    this.query = '';
+    this.node = this.root;
 };
 
 /** 
@@ -73,11 +99,23 @@ var AutocompleteSystem = function(sentences, times) {
  * @return {string[]}
  */
 AutocompleteSystem.prototype.input = function(c) {
-    
+    if (c === '#') {
+        this.add(this.query, this.root).rank++;
+        this.node = this.root;
+        this.query = '';
+        return [];
+    }
+    this.query += c;
+    this.node = this.node.children[c] || new TNode();
+    const ans = this.search(this.node).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0,3).map(a => a[0]); //localeCompare
+    return ans;
 };
 
-/** 
- * Your AutocompleteSystem object will be instantiated and called as such:
- * var obj = new AutocompleteSystem(sentences, times)
- * var param_1 = obj.input(c)
- */
+ const obj = new AutocompleteSystem(["i love you", "island","ironman", "i love leetcode"], [5,3,2,2]);
+ console.log(obj.input("i"));
+ console.log(obj.input(" "));
+ console.log(obj.input("a"));
+ console.log(obj.input("#"));
+ console.log(obj.input("i"));
+ console.log(obj.input(" "));
+ console.log(obj.input("a"));

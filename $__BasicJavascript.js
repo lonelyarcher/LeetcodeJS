@@ -29,3 +29,5 @@ let {x: {y}, z} = {x: {}, z: 7} ;
 console.log(y);
 //destructing assignment without delaration, add parenthesis
 ({x, z} = {x:1, y:2});
+
+console.log([["i love you",5],["i love leetcode",2],["island",3],["ironman",2]].map(a => a[0]));
