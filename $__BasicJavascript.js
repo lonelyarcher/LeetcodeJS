@@ -23,3 +23,11 @@ const arr2 = Array(5).fill([]); //bad, same object filled into all the arr2 elem
 arr2[0].push(1,2,3); //all the arr2 rows was pushed with 1,2,3
 console.log(arr1);
 console.log(arr2.map(v => v.join()).join('|'));
+
+let x;
+let y;
+({x, y} = { x: 1, y: 2 }); 
+//destructive assignment without declaration, 
+//without parenthesis the {} will be conside as block not object.
+let {x1, y1} = {x1: 1, y1: 2}; //with declaration, it is fine.
+let {x2:xx2, y2:yy2} = {x2: 1, y2: 2}; //xx2=1, yy2=2

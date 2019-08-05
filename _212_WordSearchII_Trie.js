@@ -21,7 +21,6 @@ const findWords = (board, words) => {
 
 let words = ["aba","baa","bab","aaab","aaa","aaaa","aaba"];
 let board = [["a","b"],["a","a"]];
-
 console.log(findWords(board, words));
 words = ["aba","baa","bab","aaab","aaa","aaaa","aaba"];
 board = [];
