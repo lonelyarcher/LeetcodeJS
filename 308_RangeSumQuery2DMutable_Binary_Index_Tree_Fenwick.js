@@ -33,17 +33,15 @@ var NumMatrix = function(matrix) {
  */
 NumMatrix.prototype.update = function(row, col, val) {
     const delta = val - this.matrix[row][col];
+    this.matrix[row][col] = val;
     this.updateBit(row + 1, col + 1, delta); //bit array index is one larger than original array
 };
 
-NumMatrix.prototype.updateBit = function(i, j, delta) {
-    while (i <= this.m) {
-        let nj = j;
-        while (nj <= this.n) {
-            this.bit[i][nj] += delta;
-            nj += (nj & -nj);    
+NumMatrix.prototype.updateBit = function(row, col, delta) {
+    for (let i = row; i <= this.m; i += (i & -i)) { //bit better for for loop to iterate
+        for (let j = col; j <= this.n; j += (j & -j)) {
+            this.bit[i][j] += delta;
         }
-        i += (i & -i); //lowbit
     }
 };
 
@@ -60,15 +58,12 @@ NumMatrix.prototype.sumRegion = function(row1, col1, row2, col2) {
     + this.query(row1, col1); //the right upper need minus -, and it offset the increasement
 };
 
-NumMatrix.prototype.query = function(i, j) {
+NumMatrix.prototype.query = function(row, col) {
     let ans = 0;
-    while (i > 0) {
-        let nj = j; //new line, need reset nj back the j position
-        while (nj > 0) {
-            ans += this.bit[i][nj];
-            nj -= (nj & -nj);
+    for (let i = row; i > 0; i -= (i & -i)) {
+        for (let j = col; j > 0; j -= (j & -j)) {
+            ans += this.bit[i][j];
         }
-        i -= (i & -i);
     }
     return ans;
 };
