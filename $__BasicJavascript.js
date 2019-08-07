@@ -31,3 +31,9 @@ let y;
 //without parenthesis the {} will be conside as block not object.
 let {x1, y1} = {x1: 1, y1: 2}; //with declaration, it is fine.
 let {x2:xx2, y2:yy2} = {x2: 1, y2: 2}; //xx2=1, yy2=2
+
+const test = [0];
+test.splice(1, 0, 1);
+console.log(test.join());
+test.splice(-3, 0, 2);
+console.log(test.join());
