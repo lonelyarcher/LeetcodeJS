@@ -41,8 +41,15 @@ var findMinStep = function(board, hand) {
 };
 
 const shrink = s => {
-    while (/R{3,}|W{3,}|B{3,}|Y{3,}|G{3,}/.test(s)) s = s.replace(/R{3,}|W{3,}|B{3,}|Y{3,}|G{3,}/, '');
-    return s;
+    let i = 0, n = s.length;
+    while (i < s.length) {
+        let j = i + 1;
+        while (j < s.length && s.charAt(i) === s.charAt(j)) j++;
+        if (j - i >= 3) s = s.slice(0, i) + s.slice(j);
+        i++;
+    }
+    if (s.length < n) return shrink(s);
+    else return s;
 }
 
 console.log(findMinStep("WWRRBBWW", "WRBRW"));
