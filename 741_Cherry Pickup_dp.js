@@ -44,5 +44,28 @@ It is guaranteed that grid[0][0] and grid[N-1][N-1] are not -1. */
  * @return {number}
  */
 var cherryPickup = function(grid) {
-    
+    const n = grid.length;
+    const dp = [...Array(n)].map(() => [...Array(n)].map(() => Array(n).fill(undefined)));
+    dp[0][0][0] = grid[0][0];
+    const subFunc = (i, j, k) => {
+        if (i < 0 || j < 0 || k < 0 || i + j - k < 0 || grid[i][j] === -1 || grid[k][i + j - k] === -1) return -Infinity;
+        if (dp[i][j][k] !== undefined) return dp[i][j][k];
+        const cur = i === k ? grid[i][j] : grid[i][j] + grid[k][i + j - k]
+        dp[i][j][k] = Math.max(
+            subFunc(i - 1, j, k) + cur,
+            subFunc(i - 1, j, k - 1) + cur,
+            subFunc(i, j - 1, k) + cur,
+            subFunc(i, j - 1, k - 1) + cur
+        );
+        return dp[i][j][k];
+    }
+    subFunc(n - 1, n - 1, n - 1);
+    return dp[n-1][n-1][n-1] === -Infinity ? 0 : dp[n-1][n-1][n-1];
 };
+
+console.log(cherryPickup([[0, 1, -1], 
+                          [1, 0, -1], 
+                          [1, 1,  1]])); //5
+console.log(cherryPickup([[1,1,-1],
+                          [1,-1,1],
+                          [-1,1,1]])); // 0
