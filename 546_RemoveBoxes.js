@@ -18,7 +18,9 @@ Explanation:
 Note: The number of boxes n would not exceed 100. */
 
 // dp, upgrade dimension, dp[i][j] from i to j, upgrade to 3 dimension, 
-// dp[i][j][k] from i to j, the last one is color x, 
+// the reason to upgrade: the problem in [i to j] is not isolated, it also depends on the boxes which immediately after j, if the boxed after j has the same color. 
+// it will be removed with the j. then j can't be removed without its right neighbour. To solve it, we add the number of the same color after j to be the third dimension.
+// so even we can't isolated solve the [i to j], but we can include the same color box after j so we can solve [i to j] and k: the number of same color boxes immediately and continuously after j. 
 // k is how many same color x box continuously after j. box[i].....box[j,R], R, R, R so k = 3. 3 R is immediately after box j which color is R 
 // The last one in j is very important, it help to divided to sub question by remove it. so the third dimension most likely is about the last element j
 // memorization search vs dp, if key is very sparse, better use memorization search. 
