@@ -10,18 +10,6 @@ C_k is at location (N-1, N-1) (ie. has value grid[N-1][N-1])
 If C_i is located at (r, c), then grid[r][c] is empty (ie. grid[r][c] == 0).
 Return the length of the shortest such clear path from top-left to bottom-right.  If such a path does not exist, return -1.
 
- 
-
-Example 1:
-
-Input: [[0,1],[1,0]]
-Output: 2
-Example 2:
-
-Input: [[0,0,0],[1,1,0],[1,1,0]]
-Output: 4
- 
-
 Note:
 
 1 <= grid.length == grid[0].length <= 100
@@ -33,14 +21,15 @@ grid[r][c] is 0 or 1
  */
 var shortestPathBinaryMatrix = function(grid) {
     //BFS
-    if (grid[0][0]) return -1;
+    grid = grid.map(r => r.slice());
+    if (grid[0][0] === 1) return -1;
     const queue = [[0,0,1]], dir = [[1, 0], [1, 1], [0, 1], [-1, 0], [-1, 1], [-1, -1], [0, -1], [1, -1]];
     const N = grid.length;
     grid[0][0] = 1;
     while(queue.length) {
         const len = queue.length;
         const [cx, cy, dist] = queue.shift();
-        if (cx === N - 1 && cy === N - 1) {
+        if (cx === N - 1 && cy === N - 1) { //bfs, once reach destination, return the shortest path.
             return dist;
         }
         for (const [dx, dy] of dir){
@@ -54,3 +43,6 @@ var shortestPathBinaryMatrix = function(grid) {
     return -1;
     
 };
+
+console.log(shortestPathBinaryMatrix([[0,1],[1,0]])); //2
+console.log(shortestPathBinaryMatrix([[0,0,0],[1,1,0],[1,1,0]])); //4

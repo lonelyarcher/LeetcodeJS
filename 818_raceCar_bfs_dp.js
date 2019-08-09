@@ -23,9 +23,9 @@ say the length of the shortest sequence of instructions to get there.
  * @param {number} target
  * @return {number}
  */
-//greedy algorithm, it go straight to targe by A, find the time (n) to i = 2**n - 1 before target and pass target, 
-//1. before target i: R A (try m times) m < n to j, then subproblem target will be j - i which is small than previous target
-//2. turn back after passing target at i, then subproblem will be i - target
+//greedy algorithm, it go straight to targe by A, find the time (n) to position 2**n - 1 before target and pass target, 
+//1. before target point: 2**n - 1: R A (try m times A) m = [0 to n - 1], and find min steps, then subproblem target will be target - (2**n - 1) + (2**m - 1) which is small than previous target
+//2. turn back after passing target at 2**(n + 1) - 1, then subproblem will be passPoint - target
 //user memorized search to caching.
 
 
@@ -39,17 +39,17 @@ var racecar_dp = function(target) {
     const before = 2**n - 1; 
     if (target === before) return n;
     //scenario 1: past the target
-    memo[target] = racecar(past - target) + n + 2;
+    memo[target] = racecar(past - target) + n + 2; //2 means RR, turn around
     //scenario 2: before the target, R then A backward for i = 0 to n - 1 times
     for (let i = 0; i < n; i++) {
-        memo[target] = Math.min(memo[target], n + 2 + i + racecar(target - before + (2**i - 1)));
+        memo[target] = Math.min(memo[target], n + 1 + i + 1 + racecar(target - before + (2**i - 1)));
+        //                                    A*n R A*i   R  
     }
     return memo[target];
 };
 
 
 //BFS state = {position, speed} 
-
 var racecar = function(target) {
     visited = {'0_1': 1};   //start position visited
     const queue = [[0, 1]]; //start position

@@ -39,3 +39,10 @@ Every JavaScript object has an internal "prototype" property, often called [[pro
 Every JavaScript function [object] has a property prototype, which is initialized with an [nearly] empty object. When you create a new instance of this function by calling it as a constructor, the [[prototype]] of that new object will point to the constructor's prototype object.
 
 If you get the [[prototype]] of a function (every function is an object, so it has one), it will result in the Function.prototype object from which functions inherit their methods (like bind, call, apply etc).
+
+DP (bottom up) vs Memorized Search (top down):
+1. Memorized is usually easier to understand but code is a little bit longer. 
+2. DP code will be shorter, but you need figure out how the value constructed from initial ones.
+3. Performance, DP (non recursion) is usually better than Memo Search (recursion) because Memo Search need maintains stack.
+But when the data is very sparse in subproblem, memo search is better, like multi-dimensional DP not every row/column/cell will be visited in search.
+4. if problem need to combines two or more state serial , but use dp with multiple dp arrays. Memo Search will be very hard in this situation. Like sell stock IV, there is two state array, sell[] and buy[]
