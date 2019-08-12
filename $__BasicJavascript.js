@@ -37,3 +37,8 @@ test.splice(1, 0, 1);
 console.log(test.join());
 test.splice(-3, 0, 2);
 console.log(test.join());
+
+const arr = [];
+arr[5] = 10;
+console.log(arr.join());
+console.log(arr[1]);
