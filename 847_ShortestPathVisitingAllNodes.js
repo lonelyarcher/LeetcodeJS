@@ -14,32 +14,26 @@ Note:
  * @return {number}
  */
 var shortestPathLength = function(graph) {
-    const bfs = (queue, visited) => {
-        let step = 0;
+    
+    let n = graph.length, ans = Infinity;
+    for (let i = 0; i < n; i++) {
+        const queue = [[i, 1<<i, 0]]; //[curNode, path, step]
+        const visited = [...Array(n)].map(() => Array(1 << n).fill(0));
+        visited[i][1<<i] = 1;
         while (queue.length) {
-            let len = queue.length;
-            while(len-- > 0) {
-                const i = queue.shift();
-                graph[i].forEach(j => {
-                    if (!visited[j]) {
-                        queue.push(j);
-                        visited[j] = 1;
-                    }
-                });
-            }
-            
-            if (visited.every(i => i)) return step;
+            const [cur, path, step] = queue.shift();
+            graph[i].forEach(j => {
+                if (!visited[j][path]) {
+                    const npath = path | 1 << j;
+                    if (npath === 1<<graph.length - 1) ans = Math.min(ans, step + 1);
+                    queue.push([j, npath, step + 1]);
+                    visited[j][npath] = 1;
+                }
+            });
         }
-        return Infinity;
-    }
-    let ans = Infinity;
-    for (let i = 0; i < graph.length; i++) {
-        const visited = Array(graph.length).fill(0);
-        visited[i] = 1;
-        ans = Math.min(bfs([i], visited), ans);
     }
     return ans;
-};
+}
 
 
 console.log(shortestPathLength([[1,2,3],[0],[0],[0]])); //4 [1,0,2,0,3]
