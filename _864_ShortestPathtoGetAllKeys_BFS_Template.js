@@ -30,7 +30,7 @@ The number of keys is in [1, 6].  Each key has a different letter and opens exac
 var shortestPathAllKeys = function(grid) {
     const queue = [], seen = [], m = grid.length, n = grid[0].length, dir = [[1, 0], [0, 1], [-1, 0], [0, -1]];
     const add = (r, c, k) => {
-        queue.add([r, c, k]);
+        queue.push([r, c, k]);
         seen[r] = seen[r] || [];
         seen[r][c] = seen[r][c] || [];
         seen[r][c][k] = true;
