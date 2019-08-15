@@ -30,6 +30,7 @@ The number of keys is in [1, 6].  Each key has a different letter and opens exac
 var shortestPathAllKeys = function(grid) {
     const queue = [], seen = [], m = grid.length, n = grid[0].length, dir = [[1, 0], [0, 1], [-1, 0], [0, -1]];
     const add = (r, c, k) => {
+        queue.add([r, c, k]);
         seen[r] = seen[r] || [];
         seen[r][c] = seen[r][c] || [];
         seen[r][c][k] = true;
@@ -43,7 +44,7 @@ var shortestPathAllKeys = function(grid) {
     for (let r = 0; r < m; r++) {
         for (let c = 0; c < n; c++) {
             if (grid[r][c] === '@') {
-                queue.push([r, c, 0]);
+               
                 add(r, c, 0);
             }
         }
@@ -57,13 +58,14 @@ var shortestPathAllKeys = function(grid) {
             for (let d of dir) {
                 const [nr, nc] = [r + d[0], c + d[1]];
                 if (grid[nr] && grid[nr][nc] === '.' && !exist(nr, nc, k)) {
-                    queue.push([nr, nc, k]);
+            
+                    add(nr, nc, k);
                 } 
                 if (grid[nr] && /[a-f]/.test(grid[nr][nc]) && !exist(nr, nc, k + 1)) {
-                    queue.push([nr, nc, k + 1]);
+                    add(nr, nc, k + 1);
                 }
                 if (grid[nr] && /[A-F]/.test(grid[nr][nc]) && hasKey(k, grid[nr][nc]) && !exist(nr, nc, k)) {
-                    queue.push([nr, nc, k]);
+                    add(nr, nc, k);
                 }
             }
         }
