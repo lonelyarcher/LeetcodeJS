@@ -29,6 +29,7 @@ You may assume that there are no duplicate edges in the input prerequisites. */
  * @param {number[][]} prerequisites
  * @return {number[]}
  */
+//Topological Sort, BFS by in-degree
 var findOrder = function(numCourses, prerequisites) {
     const courses = [...Array(numCourses)].map((v, i) => i);
     const adj = courses.map(() => []), indegrees = Array(numCourses).fill(0);

@@ -13,6 +13,9 @@ Note:
  * @param {number[][]} graph
  * @return {number}
  */
+
+//Binary Search for hard question, try all the possible answer range 0 - N, use binary search to find correct ans.
+
 //because this path can pass multiple times on one node, so it is different than our traditional BFS or DFS, each node only be visited once.
 //But we still need a unique state to avoid search repeat and go into infinite loop.
 //so here unique state could be [current node, the visiting path of which node is visited and not visited], because of graph.length range is <= 12

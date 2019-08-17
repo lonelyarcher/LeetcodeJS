@@ -1,5 +1,6 @@
 /*
-Given a non-decreasing array of positive integers nums and an integer K, find out if this array can be divided into one or more disjoint increasing subsequences of length at least K.
+Given a non-decreasing array of positive integers nums and an integer K, find out if this array can be divided into 
+one or more disjoint increasing subsequences of length at least K.
 
 1 <= nums.length <= 10^5
 1 <= K <= nums.length
