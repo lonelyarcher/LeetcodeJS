@@ -33,10 +33,10 @@ Both str1 and str2 contain only lowercase English letters. */
 //if one character need to link to more than one characters (two out degrees), then fails, return false
 //if the edge forms a linked list: a -> b, b -> c, it is fine, 
 //we can switch from the end  b -> c first, otherwise if you switch a -> b, you will have both b in one end then fails.
-//If a cycle, you need find a unused character to be temp transform to break the loop.
+//If a cycle, you need find a unused character from str2 to be temp transform to break the loop.
+//if str2 contains all the characters a - z, then you don't have spare one to break circle. return false.
 //a -> b, b -> a, you first change a -> c, it became a c -> b -> a, a linked list 
-//if there is no spare character to break the cycle, return false
-//If a -> a, self cycle, then a is a spare character. 
+//If a -> a, self cycle, it is fine, you don't need to handle it.
 
 const hasCycle = (V, adj) => { //need use dfs to detect cycle in directed graph. time O(V+E) space O(V+E)
     const seen = {}; //record visited vertex/vertice
@@ -60,17 +60,15 @@ const hasCycle = (V, adj) => { //need use dfs to detect cycle in directed graph.
 var canConvert = function(str1, str2) { //check if one char not point to two different char, and has spare char is enough
     //because if no spare char, which means all low case characters are present, and no cycle, which means two strings are identical.
     if (str1 === str2) return true;  //for the no spare and no cycle
-    let hasSpare = false;
     const adj = {}, V = new Set(); 
     for (let i = 0; i < str1.length; i++) {
         const a = str1.charAt(i), b = str2.charAt(i);
         V.add(a);
         V.add(b);
-        if (a === b) hasSpare = true;
         if (!adj[a]) adj[a] = b;
         else if (adj[a] !== b) return false;
     }
-    return hasSpare || Object.keys(adj).length < 26 || !hasCycle(V, adj);
+    return new Set(Object.values(adj)).size < 26; //check the values of map, take unique value, if not cover a to z, return true.
 };
 console.log(canConvert("abcdefghijklmnopqrstuvwxyz", "bcdefghijklmnopqrstuvwxyza")); //false
 console.log(canConvert("aabcc", "ccdee")); //true
@@ -79,5 +77,7 @@ console.log(canConvert("aaaa", "aaaa")); //true
 console.log(canConvert("aabcc", "ccdee")); //true
 console.log(canConvert("leetcode", "codeleet")); //false
 console.log(canConvert("aabaa", "ccdee")); //false
+console.log(canConvert("abcdefghijklmnopqrstuvwxyz", "bcdefghijklmnopqrstuvwxyzq")); //true
+console.log(canConvert("abcdefghijklmnopqrstuvwxyz", "azbcdefghijklmnopqrstuvwxyz")); //true
 
 
