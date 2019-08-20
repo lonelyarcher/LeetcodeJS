@@ -20,7 +20,7 @@ iter.next().value.then(
 );
 
 
-run(generator) {
+function runner(generator) {
     const iter = generator();
     const handleNext = (value) => {
         const next = iter.next(value);
@@ -30,13 +30,13 @@ run(generator) {
             return Promise.resolve(next.value).then(
                 handleNext,
                 err => Promise.resolve(iter.throw(`Err: ${err}`)).then(handleNext); //throw the error in gen 
-      );
+            );
+        }
+    };
+    
+    return handleNext();
 }
-  };
-iter.next().value.then(
-    res => iter.next(res.name), // pass the response data to next
-    err => iter.throw(`Err: ${err}`) //throw the error in gen 
-);
-}
+
+runner(generator);
 
 
