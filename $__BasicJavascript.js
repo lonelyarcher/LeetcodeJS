@@ -42,3 +42,5 @@ const arr = [];
 arr[5] = 10;
 console.log(arr.join());
 console.log(arr[1]);
+
+console.log('20' - '10');
