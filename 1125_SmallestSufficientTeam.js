@@ -89,10 +89,10 @@ var smallestSufficientTeam_DP = function(req_skills, people) {
  
 
 let req_skills = ["java","nodejs","reactjs"], people = [["java"],["nodejs"],["nodejs","reactjs"]];
-console.log(smallestSufficientTeam(req_skills, people));
+console.log(smallestSufficientTeam_DP(req_skills, people));
 //Output: [0,2]
 
 
 req_skills = ["algorithms","math","java","reactjs","csharp","aws"], people = [["algorithms","math","java"],["algorithms","math","reactjs"],["java","csharp","aws"],["reactjs","csharp"],["csharp","math"],["aws","java"]];
-console.log(smallestSufficientTeam(req_skills, people));
+console.log(smallestSufficientTeam_DP(req_skills, people));
 //Output: [1,2]
