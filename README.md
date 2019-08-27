@@ -8,7 +8,7 @@ git remote add origin git@github.com:lonelyarcher/leetcodeJS.git
 git push -u origin master  
 
 "workbench.editor.highlightModifiedTabs": true
-editor.acceptSuggestionOnCommitCharacter: false
+"editor.acceptSuggestionOnCommitCharacter": false
 
 BFS, visited immidiately after append into queue
 
