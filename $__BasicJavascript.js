@@ -44,3 +44,7 @@ console.log(arr.join());
 console.log(arr[1]);
 
 console.log('20' - '10');
+
+const a1 = [1, 2, 3, 4, 5, 6, 7];
+//a1.splice(0, 3, 0)
+console.log(a1.slice(0, 0).concat([0]).concat(a1.slice(3)));

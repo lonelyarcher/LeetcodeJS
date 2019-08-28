@@ -44,5 +44,21 @@ Note:
  * @return {number}
  */
 var mergeStones = function(stones, K) {
-    
+    if (K > 2 && stones.length % (K - 1) !== 1) return -1;
+    let ans = Infinity;
+    const dfs = (arr, cost) => {
+        if (cost >= ans) return;
+        if (arr.length === 1) ans = cost;
+        for (let i = 0; i + K <= arr.length; i++) {
+            const merge = stones.slice(i, i + K);
+            const sum = merge.reduce((a, c) => a + c);
+            stones.splice(i, K, sum);
+            dfs(stones, cost + sum);
+            stones.splice(i, 1, ...merge);
+        }
+    }
+    dfs(stones, 0);
+    return ans;
 };
+console.log(mergeStones([3,2,4,1], 3));
+console.log(mergeStones([3,2,4,1], 2));
