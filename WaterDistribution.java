@@ -5,7 +5,7 @@ import java.util.Set;
 
 
 
-public class WaterDistribution {
+class WaterDistribution {
     class Node {
         String type;
         Integer house1;
@@ -24,16 +24,16 @@ public class WaterDistribution {
     
     public int find(int i) {
         if (parent[i] != i) parent[i] = find(parent[i]);
-        return i;
+        return parent[i];
     }
     
     public void union(int i, int j) {
         int pi = find(i);
         int pj = find(j);
         if (supplied.contains(pi)) {
-            parent[j] = pi;
+            parent[pj] = pi;
         } else {
-            parent[i] = pj;
+            parent[pi] = pj;
         }
     }
     
@@ -42,7 +42,7 @@ public class WaterDistribution {
         
         parent = new int[wells.length + 1];
         for (int i = 0; i < wells.length; i++) {
-            heap.offer(new Node("well", i, null, wells[i]));
+            heap.offer(new Node("well", i + 1, null, wells[i]));
             parent[i + 1] = i + 1;
         }
         for (int[] pipe : pipes) {
@@ -54,7 +54,7 @@ public class WaterDistribution {
             Node node = heap.poll();
             
             if (node.type.equals("well")) {
-                if (supplied.contains(node.house1)) continue;
+                if (supplied.contains(find(node.house1))) continue;
                 cost += node.cost;
                 supplied.add(find(node.house1));
             } else {
@@ -71,6 +71,6 @@ public class WaterDistribution {
     	WaterDistribution solution = new WaterDistribution();
     	int[] wells = {1, 2, 2};
     	int[][] pipes = {{1,2,1}, {2,3,1}};
-		solution.minCostToSupplyWater(3, wells, pipes);
+		System.out.print(solution.minCostToSupplyWater(3, wells, pipes));
 	}
 }

@@ -1,3 +1,5 @@
+import java.util.PriorityQueue;
+
 class Solution {
     public int connectSticks(int[] sticks) {
         PriorityQueue<Integer> heap = new PriorityQueue<>();
@@ -13,4 +15,9 @@ class Solution {
         }
         return cost;
     }
+
+    public static void main(String[] args) {
+        Solution s = new Solution();
+    	System.out.print(s.connectSticks(new int[]{1,2,3,5}));
+	}
 }
