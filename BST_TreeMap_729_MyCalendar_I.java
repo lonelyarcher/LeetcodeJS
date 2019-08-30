@@ -1,3 +1,6 @@
+
+
+
 /* Implement a MyCalendar class to store your events. A new event can be added if adding the event will not cause a double booking.
 
 Your class will have the method, book(int start, int end). Formally, this represents a booking on the half open interval [start, end), the range of real numbers x such that start <= x < end.
@@ -22,22 +25,27 @@ Note:
 
 The number of calls to MyCalendar.book per test case will be at most 1000.
 In calls to MyCalendar.book(start, end), start and end are integers in the range [0, 10^9]. */
-
-var MyCalendar = function() {
+import java.util.TreeMap;
+class MyCalendar {
+    private TreeMap<Integer, Integer> startBst;
+    public MyCalendar() {
+        startBst = new TreeMap<>();   
+    }
     
-};
+    public boolean book(int start, int end) {
+        Integer prev = startBst.lowerKey(start);
+        if (prev != null && startBst.get(prev) > start) return false;
+        Integer after = startBst.ceilingKey(start);
+        if (after != null && after < end) return false;
+        startBst.put(start, end);
+        return true;
+    }
 
-/** 
- * @param {number} start 
- * @param {number} end
- * @return {boolean}
- */
-MyCalendar.prototype.book = function(start, end) {
-    
-};
+    public static void main(String[] args) {
+        MyCalendar myCalendar = new MyCalendar();
+        System.out.println(myCalendar.book(10, 20)); // returns true
+        System.out.println(myCalendar.book(15, 25)); // returns false
+        System.out.println(myCalendar.book(20, 30)); // returns true
+    }
+}
 
-/** 
- * Your MyCalendar object will be instantiated and called as such:
- * var obj = new MyCalendar()
- * var param_1 = obj.book(start,end)
- */
