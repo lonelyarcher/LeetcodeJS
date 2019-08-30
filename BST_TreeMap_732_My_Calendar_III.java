@@ -1,4 +1,3 @@
-import java.util.Map;
 import java.util.TreeMap;
 
 /* Implement a MyCalendarThree class to store your events. A new event can always be added.

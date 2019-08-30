@@ -1,3 +1,5 @@
+import java.util.TreeMap;
+
 /* Implement a MyCalendarTwo class to store your events. A new event can be added if adding the event will not cause a triple booking.
 
 Your class will have one method, book(int start, int end). Formally, this represents a booking on the half open interval [start, end), the range of real numbers x such that start <= x < end.
@@ -30,18 +32,16 @@ The number of calls to MyCalendar.book per test case will be at most 1000.
 In calls to MyCalendar.book(start, end), start and end are integers in the range [0, 10^9]. */
 
 
-var MyCalendarTwo = function() {
-    
-};
+class MyCalendarTwo {
+    TreeMap<Integer, Integer> bst = new TreeMap<>();
+    public MyCalendarTwo() {
 
-/** 
- * @param {number} start 
- * @param {number} end
- * @return {boolean}
- */
-MyCalendarTwo.prototype.book = function(start, end) {
-    
-};
+    }
+    public boolean book(int start, int end) {
+        return true;
+    }
+}
+
 
 /** 
  * Your MyCalendarTwo object will be instantiated and called as such:
