@@ -6,16 +6,22 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - MyCalendarTwo",
+            "request": "launch",
+            "mainClass": "MyCalendarTwo",
+            "projectName": "leetcodejs_b444fdbb"
+        },
+        {
+            "type": "java",
             "name": "Debug Java",
             "request": "launch",
             "mainClass": "${file}"
         },
-        {   
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Javascript",
             "program": "${file}"
         }
-
     ]
 }

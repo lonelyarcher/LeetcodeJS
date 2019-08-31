@@ -33,18 +33,45 @@ In calls to MyCalendar.book(start, end), start and end are integers in the range
 
 
 class MyCalendarTwo {
-    TreeMap<Integer, Integer> bst = new TreeMap<>();
+    TreeMap<Integer, Integer> bst = new TreeMap<>(); //put all the start and end as key in this Binary Search Tree (TreeMap)
+    //value will be the overlap from this key to next key
     public MyCalendarTwo() {
 
     }
     public boolean book(int start, int end) {
+        Integer preStart = bst.floorKey(start); //find the key before or at the same value of the start
+        Integer preEnd = bst.floorKey(end); //find the floor key of end
+        for (Integer i : bst.subMap(preStart == null ? start : preStart, end).keySet()) { //preflight to check validation, begin with floor key of the start (inclusive)
+            //to the end of new interval to be inserted, if one overlap of a segment equals to 2, then you can't add the new interval
+            if (bst.get(i) >= 2) {
+                return false;
+            }
+        }
+        bst.put(start, preStart == null ? 0 : bst.get(preStart));//insert the start, we will update later, so leave it be zero or the same as floor key
+        bst.put(end, preEnd == null ? 0 : bst.get(preEnd));//insert the end
+        for (Integer i : bst.subMap(start, end).keySet()) {
+            bst.put(i, bst.get(i) + 1); //update the range from [begin to end)
+        }
         return true;
+    }
+    public static void main(String[] args) {
+        MyCalendarTwo c = new MyCalendarTwo();
+        System.out.println(c.book(26, 35)); //true
+        System.out.println(c.book(26, 32)); //true
+        System.out.println(c.book(25, 32)); //false
+        System.out.println(c.book(18, 26)); //true
+        System.out.println(c.book(40, 45)); //true
+        System.out.println(c.book(19, 26)); //true
+        System.out.println(c.book(48, 50)); //true
+        System.out.println(c.book(1, 6)); //true
+        System.out.println(c.book(46, 50)); //true
+        System.out.println(c.book(11, 18)); //true
     }
 }
 
 
 /** 
  * Your MyCalendarTwo object will be instantiated and called as such:
- * var obj = new MyCalendarTwo()
+ = new MyCalendarTwo()
  * var param_1 = obj.book(start,end)
  */
