@@ -54,12 +54,12 @@ class FallingSquares {
             bst.put(left, preLeft != null ? bst.get(preLeft) : 0);
             bst.put (right, preRight != null ? bst.get(preRight) : 0);
             int maxHeight = 0;
-            Iterator<Integer> iter = bst.subMap(left, right).keySet().iterator();
+            Iterator<Integer> iter = bst.subMap(left, right).keySet().iterator();//use iterator to avoiding the current modification error
             while (iter.hasNext()) {
                maxHeight = Math.max(maxHeight, bst.get(iter.next()) + height);
-               iter.remove();
+               iter.remove();//remove the coved the squares
             }
-            bst.put(left, maxHeight);
+            bst.put(left, maxHeight);//set the new left to maxHeight
             ans.add(ans.isEmpty() ? maxHeight : Math.max(ans.get(ans.size() - 1), maxHeight));
         }
         return ans;
