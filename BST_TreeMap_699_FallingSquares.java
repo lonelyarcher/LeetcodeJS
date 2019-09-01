@@ -1,3 +1,8 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeMap;
+
 /* On an infinite number line (x-axis), we drop given squares in the order they are given.
 
 The i-th square dropped (positions[i] = (left, side_length)) is a square with the left-most point being positions[i][0] and sidelength positions[i][1].
@@ -36,10 +41,33 @@ Note:
 1 <= positions[i][0] <= 10^8.
 1 <= positions[i][1] <= 10^6. */
 
-/**
- * @param {number[][]} positions
- * @return {number[]}
- */
-var fallingSquares = function(positions) {
-    
-};
+class FallingSquares {
+    public List<Integer> fallingSquares(int[][] positions) {
+        TreeMap<Integer, Integer> bst = new TreeMap<>();
+        List<Integer> ans = new ArrayList<Integer>();
+        for (int i = 0; i < positions.length; i++) {
+            int left = positions[i][0];
+            int right = positions[i][0] + positions[i][1];
+            int height = positions[i][1];
+            Integer preLeft = bst.floorKey(left);
+            Integer preRight = bst.floorKey(right);
+            bst.put(left, preLeft != null ? bst.get(preLeft) : 0);
+            bst.put (right, preRight != null ? bst.get(preRight) : 0);
+            int maxHeight = 0;
+            Iterator<Integer> iter = bst.subMap(left, right).keySet().iterator();
+            while (iter.hasNext()) {
+               maxHeight = Math.max(maxHeight, bst.get(iter.next()) + height);
+               iter.remove();
+            }
+            bst.put(left, maxHeight);
+            ans.add(ans.isEmpty() ? maxHeight : Math.max(ans.get(ans.size() - 1), maxHeight));
+        }
+        return ans;
+    }
+    public static void main(String[] args) {
+        FallingSquares so = new FallingSquares();
+        System.out.println(so.fallingSquares(new int[][]{{9, 7}, {1, 9}, {3, 1}}).toString()); //[7, 16, 17]
+        System.out.println(so.fallingSquares(new int[][]{{1, 2}, {2, 3}, {6, 1}}).toString()); //[2, 5, 5]
+        System.out.println(so.fallingSquares(new int[][]{{100, 100}, {200, 100}}).toString()); //[100, 100]
+    }
+}
