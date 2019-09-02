@@ -41,7 +41,7 @@ Note:
 1 <= positions[i][0] <= 10^8.
 1 <= positions[i][1] <= 10^6. */
 
-class FallingSquares {
+class FallingSquares {//same as MyCalendarII, III, BST key is stare and end, value is the height after this key.
     public List<Integer> fallingSquares(int[][] positions) {
         TreeMap<Integer, Integer> bst = new TreeMap<>();
         List<Integer> ans = new ArrayList<Integer>();
@@ -49,9 +49,9 @@ class FallingSquares {
             int left = positions[i][0];
             int right = positions[i][0] + positions[i][1];
             int height = positions[i][1];
-            Integer preLeft = bst.floorKey(left);
+            Integer preLeft = bst.floorKey(left); //floorkey will include same existing key as new key
             Integer preRight = bst.floorKey(right);
-            bst.put(left, preLeft != null ? bst.get(preLeft) : 0);
+            bst.put(left, preLeft != null ? bst.get(preLeft) : 0); //in case of the floorkey not exists
             bst.put (right, preRight != null ? bst.get(preRight) : 0);
             int maxHeight = 0;
             Iterator<Integer> iter = bst.subMap(left, right).keySet().iterator();//use iterator to avoiding the current modification error
