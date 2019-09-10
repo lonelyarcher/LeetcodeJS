@@ -2,7 +2,8 @@
 
 graph.length = N, and j != i is in the list graph[i] exactly once, if and only if nodes i and j are connected.
 
-Return the length of the shortest path that visits every node. You may start and stop at any node, you may revisit nodes multiple times, and you may reuse edges.
+Return the length of the shortest path that visits every node. You may start and stop at any node, 
+you may revisit nodes multiple times, and you may reuse edges.
 
 
 Note:
@@ -44,7 +45,7 @@ var shortestPathLength = function(graph) {
         for (let i = 0; i < size; i++) {
             const [cur, path] = queue.shift();
             if (path === (1<<n) - 1) return step;
-            graph[cur].forEach(j => {   //Mistake: don't use return in forEach to break the loop, it will not, only throw exception will
+            graph[cur].forEach(j => {   //Mistake: don't use return in forEach to break the loop, it will not, only throw exception 
                 const npath = path | (1 << j);
                /*  if (npath === (1<<n) - 1) {
                     console.log(npath);
