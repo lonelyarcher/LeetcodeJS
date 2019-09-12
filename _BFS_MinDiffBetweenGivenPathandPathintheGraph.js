@@ -45,8 +45,10 @@ const minDiff = arr => {
 	const n = arr.length;
 	const heap = new Heap((k1, k2) => diffs[~~k1/n][k1%n] - diffs[~~k2/n][k2%n];
 	const diffs = [...Array(listAllNodes().length)].map(() => Array(arr.length).fill(Infinity));
+	const seen = {};
 	for (let [s, i] of listAllNodes().entries()) {
 		heap.offer(i * arr.length + 0);
+		seen[i * arr.length + 0] = true;
 		diffs[i][0] = diff(s, arr[0]);
 	}
 	
@@ -57,7 +59,8 @@ const minDiff = arr => {
 		for (let [next, ni] of getNeighbors(node).entries()) {
 			const newNode = [ni, j + 1];
 			diffs[ni][j+1] = Math.min(diffs[ni][j + 1], diffs[i][j] + diff(next, arr[j + 1]));
-			if (!heap.has(ni*n+j+1) heap.offer(ni*n+j+1);
+			if (!seen[ni*n+j+1]) heap.offer(ni*n+j+1);
+			seen[ni*n+j+1] = true;
 		}
 	}
 	return null;
