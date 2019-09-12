@@ -30,3 +30,35 @@ Explanation: The path [AAA, BBC, AAA, BBC] is closest to given array.
 In path, BBC differs from CCC by 2 and BBC differs from BBD by 1 hence answer is 2 + 1 = 3.
 
 Notice that we can visit the same node multiple times. */
+
+const listAllNodes = () => [];
+const getNeighbors = node => [];
+const diff = (s1, s2) => {
+	let ans = 0;
+	for (let i = 0; i < 3; i++) {
+		if (s1.charAt(i) !== s2.charAt(i)) ans++;
+	}
+	return ans;
+};
+
+const minDiff = arr => {
+	const n = arr.length;
+	const heap = new Heap((k1, k2) => diffs[~~k1/n][k1%n] - diffs[~~k2/n][k2%n];
+	const diffs = [...Array(listAllNodes().length)].map(() => Array(arr.length).fill(Infinity));
+	for (let [s, i] of listAllNodes().entries()) {
+		heap.offer(i * arr.length + 0);
+		diffs[i][0] = diff(s, arr[0]);
+	}
+	
+	while(!heap.length){
+		const k = heap.poll();
+		const [i, j] = [~~k/n, k%n];
+		if (j === arr.length - 1) return diffs[i][j];
+		for (let [next, ni] of getNeighbors(node).entries()) {
+			const newNode = [ni, j + 1];
+			diffs[ni][j+1] = Math.min(diffs[ni][j + 1], diffs[i][j] + diff(next, arr[j + 1]));
+			if (!heap.has(ni*n+j+1) heap.offer(ni*n+j+1);
+		}
+	}
+	return null;
+};
