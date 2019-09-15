@@ -51,3 +51,7 @@ console.log(a1.slice(0, 0).concat([0]).concat(a1.slice(3)));//Array(5) [0, 4, 5,
 
 console.log(0^1); //1
 console.log(1^1); //0
+
+
+console.log(~~(3/2));//1
+console.log(~~(-1.232));//-1

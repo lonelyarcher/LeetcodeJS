@@ -1,7 +1,9 @@
 /**
- * Given two strings str1 and str2, return the shortest string that has both str1 and str2 as subsequences.  If multiple answers exist, you may return any of them.
+ * Given two strings str1 and str2, return the shortest string that has both str1 and str2 as subsequences. 
+ *  If multiple answers exist, you may return any of them.
 
-(A string S is a subsequence of string T if deleting some number of characters from T (possibly 0, and the characters are chosen anywhere from T) results in the string S.)
+(A string S is a subsequence of string T if deleting some number of characters from T
+     (possibly 0, and the characters are chosen anywhere from T) results in the string S.)
 
  
 
@@ -32,6 +34,10 @@ str1 and str2 consist of lowercase English letters.
  * @param {string} str2
  * @return {string}
  */
+
+//look at the last character of the common sequence, which must one of the last char of str1 or str2
+//if same end character, then dp[i][j] = dp[i - 1][j - 1] + lastChar;
+//else dp[i][j] = short sequence of (dp[i - 1][j] + str1[i - 1], dp[i][j - 1] + str2[j - 1]) 
 var shortestCommonSupersequence = function(str1, str2) {
     //dynamic programming
     console.info(Array(str1.length + 1).fill());

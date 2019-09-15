@@ -51,3 +51,4 @@ var maximumSum = function(arr) {
 console.log(maximumSum([1,-2,0,3])); // 4
 console.log(maximumSum([1,-2,-2,3])); //3
 console.log(maximumSum([-1,-1,-1,-1])); //-1
+

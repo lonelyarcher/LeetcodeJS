@@ -3,14 +3,12 @@
 We are given 2 APIs which work for this graph:
 
 class Graph {
-	/**
-	* Get all neighbors of a node.
-	*/
+
+	//Get all neighbors of a node.
+
 	Set<String> getNeighbors(String node);
 
-	/**
-	* Get a list of all nodes in no particular order.
-	*/
+	//Get a list of all nodes in no particular order.
 	Set<String> listAllNodes();
 }
 Consider a graph G:
@@ -57,7 +55,6 @@ const minDiff = arr => {
 		const [i, j] = [~~k/n, k%n];
 		if (j === arr.length - 1) return diffs[i][j];
 		for (let [next, ni] of getNeighbors(node).entries()) {
-			const newNode = [ni, j + 1];
 			diffs[ni][j+1] = Math.min(diffs[ni][j + 1], diffs[i][j] + diff(next, arr[j + 1]));
 			if (!seen[ni*n+j+1]) heap.offer(ni*n+j+1);
 			seen[ni*n+j+1] = true;

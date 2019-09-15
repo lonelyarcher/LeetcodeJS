@@ -40,19 +40,15 @@ var findMinStep = function(board, hand) {
     return ans === Infinity ? -1 : ans;
 };
 
-const shrink = s => {
-    let i = 0;
-    while (i < s.length) {
-        let j = i + 1;
-        while (j < s.length && s.charAt(i) === s.charAt(j)) j++;
-        if (j - i >= 3) {
-            s = s.slice(0, i) + s.slice(j);
-            i = 0
-        } else {
-            i++;
+const shrink = s => { //shrink with a stack
+    const st = [];
+    for (let i = 0; i < s.length; i++) {
+        const c = s.charAt(i);
+        if (st.length < 2 || c === st[0] || c === st[1] || (i < s.length - 1 && c === s.charAt(i +1))) st.unshift(c);
+        else {
+            while(st[1] === st[0])
         }
     }
-    return s;
 }
 
 console.log(findMinStep("WWRRBBWW", "WRBRW"));
