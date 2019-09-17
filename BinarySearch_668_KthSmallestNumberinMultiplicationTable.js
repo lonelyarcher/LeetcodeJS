@@ -34,11 +34,12 @@ The k will be in the range [1, m * n] */
 
 var findKthNumber = function(m, n, k) {
     const getNumOfLE = x => {
-        let num = 0;
+        let ans = 0;
         for (let i = 1; i <= m; i++) {
-            num += Math.min(n, parseInt(x/i));
+            ans += Math.min(n, parseInt(x/i)); //every row, find the num of which is small or equals to x, add it to the ans
+            //for the rows are from [1,2,3,..., n] , [1*2, 2*2,...,n*2], ...[1*i, 2*i, ...,x, ..., n*i], so the num will be x/i is LE to x.
         }
-        return num;
+        return ans;
     };
 //find the smallest of value, which satisfy getNumOfLE(value) >= k, because it is the smallest, so it must appear in matrix.
     let l = 1, r = m * n + 1;
