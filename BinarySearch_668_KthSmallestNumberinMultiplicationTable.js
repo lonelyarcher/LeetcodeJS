@@ -31,6 +31,25 @@ The k will be in the range [1, m * n] */
  * @param {number} k
  * @return {number}
  */
+
 var findKthNumber = function(m, n, k) {
-    
+    const getNumOfLE = x => {
+        let num = 0;
+        for (let i = 1; i <= m; i++) {
+            num += Math.min(n, parseInt(x/i));
+        }
+        return num;
+    };
+//find the smallest of value, which satisfy getNumOfLE(value) >= k, because it is the smallest, so it must appear in matrix.
+    let l = 1, r = m * n + 1;
+    while (l < r) {
+        const mid = parseInt((l + r) / 2);
+        const le = getNumOfLE(mid);
+        if (le >= k) r = mid;
+        else l = mid + 1;
+    }
+    return l; 
 };
+
+console.log(findKthNumber(3,3,5)); //3
+console.log(findKthNumber(2, 3, 6)); //6
