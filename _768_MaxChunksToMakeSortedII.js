@@ -28,5 +28,17 @@ arr[i] will be an integer in range [0, 10**8]. */
  * @return {number}
  */
 var maxChunksToSorted = function(arr) {
-    
+    const sorted = arr.reduce((a, c, i) => {a.push([c, i]); return a;}, []).sort((a, b) => a[0] - b[0]);
+    let ans = 0;
+    for (let i = 0, j = 0; i < sorted.length && j < sorted.length; i++) {
+        if (sorted[i][1] >= j) {
+            j = sorted[i][1];
+            ans++;
+        }
+    }
+    return ans;
 };
+
+console.log(maxChunksToSorted([5,4,3,2,1])); // 1
+console.log(maxChunksToSorted([2,1,3,4,4])); // 4
+console.log(maxChunksToSorted([4,2,2,1,1])); //1
