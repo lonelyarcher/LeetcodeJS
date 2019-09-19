@@ -4,7 +4,20 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - NumberOfValidSubarrays",
+            "request": "launch",
+            "mainClass": "NumberOfValidSubarrays",
+            "projectName": "leetcodejs_cc35096"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Solution",
+            "request": "launch",
+            "mainClass": "Solution",
+            "projectName": "leetcodejs_cc35096"
+        },
         {
             "type": "java",
             "name": "Debug Java",
