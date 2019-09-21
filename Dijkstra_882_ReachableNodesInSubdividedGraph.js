@@ -31,14 +31,15 @@ A reachable node is a node that can be travelled to using at most M moves starti
  */
 //Graph Problem: first generate adjacency list. G : list of neighbour with the weight
 //Dijkstra on original nodes, find out how many original nodes it can be reached from 0;
-//Node_State will be current Node and num of moves left, decrease by each edges's cost: n + 1;
-//SeenNodes record all visited nodes to avoid repeating to add into the queue
-//when moves not enough to move to next node, then stop BFS
+//Node_State will be current Node and total cost from 0 to the current node
+//settled record all polled min nodes
+//if poll out the node which is already settled, just continue to next poll
+//when moves not enough to move to next node, then stop
 
-//While bfs, not only recording seen Nodes, but also recording seen edges
-//whenever visit a edge, record it visited nodes (include sub nodes) into the seenEdges map
+//While dijkstra, not only recording seen Nodes, but also recording seen edges
+//whenever visit a edge (even it is to a settled node), record it visited nodes (include sub nodes) into the seenEdges map
 //because you can go from one end or from another end, so we record both direction as n1*N + n2 (key)
-//when BFS finished, we can calculate all the edges at the end
+//when dijkstra finished, we can calculate all the edges at the end
 //for each edge we visited, take the max lengths of one direction and another, add it up but not exceeding the total n of this edge
 const popMin = arr => {
     let idx = 0;
