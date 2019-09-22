@@ -40,15 +40,18 @@ Constraints:
  * @param {number} split
  * @return {number}
  */
+//DP
 var minBuildTime = function(blocks, split) {
+    blocks.sort((a, b) => a - b);
     const n = blocks.length;
-    let ans = 0;
-    let worker = 1;
-    while (worker < n) {
-        worker <<= 1;
-        ans += split;
-    }
-    if (worker === n) return ans + Math.max(...blocks);
-    blocks.sort((a, b) => b - a);
-    return ans + Math.max(blocks[0] - split, blocks[worker - n]);
-}
+    const m = [...Array(n + 1)].map(() => Array(n + 1).fill(undefined));
+    const sub = (i, j) => {
+        if (i === 0) return 0; 
+        if (j === 0) return Infinity;
+        if (j >= i) return blocks[i - 1];
+        if (m[i][j] !== undefined) return m[i][j];
+        m[i][j] = Math.min(split + sub(i, 2*j), Math.max(blocks[i - 1], sub(i - 1, j - 1)));
+        return m[i][j];
+    };
+    return sub(n, 1);
+};
