@@ -46,22 +46,30 @@ Note:
  * @param {number[][]} stations
  * @return {number}
  */
+Array.prototype.pollMax = function(){
+    let max = 0;
+    for (let i = 1; i < this.length; i++) {
+        if (this[i] > this[max]) max = i;
+    }
+    return this.splice(max, 1)[0];
+}
+
 var minRefuelStops = function(target, startFuel, stations) {
-    let i = 0, maxMile = startFuel, ans = 0;
-    while(maxMile < target) {
-        while(i < stations.length && stations[i][0] <= startFuel) {
-            maxMile = Math.max(maxMile, stations[i][1] + startFuel)
-            i++;
+    const maxHeap = [];
+    let i = 0, ans = 0;
+    stations.push([target, 0]);
+    for(let i = 0; i < stations.length; i++) {
+        while (startFuel < stations[i][0]) {
+            if (!maxHeap.length) return -1;
+            startFuel += maxHeap.pollMax();
+            ans++;
         }
-        if (startFuel === maxMile) return -1;
-        startFuel = maxMile;
-        ans++;
+        maxHeap.push(stations[i][1]);
     }
     return ans;
 };
-
+console.log(minRefuelStops(1000, 299, [[13,21],[26,115],[100,47],[225,99],[299,141],[444,198],[608,190],[636,157],[647,255],[841,123]]));//4
 console.log(minRefuelStops(100, startFuel = 10, stations = [[10,60],[20,30],[30,30],[60,40]]));//2
 console.log(minRefuelStops(1, 1, []));//0
 console.log(minRefuelStops(100, startFuel = 1, stations = [[10,100]]));//-1
 console.log(minRefuelStops(100,50,[[40,50]]));//1
-console.log(minRefuelStops(1000, 299, [[13,21],[26,115],[100,47],[225,99],[299,141],[444,198],[608,190],[636,157],[647,255],[841,123]]));//4

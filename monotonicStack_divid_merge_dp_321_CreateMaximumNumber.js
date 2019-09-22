@@ -1,4 +1,6 @@
-/* Given two arrays of length m and n with digits 0-9 representing two numbers. Create the maximum number of length k <= m + n from digits of the two. The relative order of the digits from the same array must be preserved. Return an array of the k digits.
+/* Given two arrays of length m and n with digits 0-9 representing two numbers. 
+Create the maximum number of length k <= m + n from digits of the two.
+ The relative order of the digits from the same array must be preserved. Return an array of the k digits.
 
 Note: You should try to optimize your time and space complexity.
 
@@ -10,7 +12,8 @@ Note: You should try to optimize your time and space complexity.
  * @return {number[]}
  */
 var maxNumber_3D_DP = function(nums1, nums2, k) { //not good solution, time complexity: O(m*n*k*(m + n)), space complexity: m*n*k*(m + n)
-    //first the max number which is before the can't-back-point (m + n - k), then do the left. Each step need O(n) to find max digit. The problem is that there is two array.
+    //first the max number which is before the can't-back-point (m + n - k), then do the left. Each step need O(n) to find max digit. 
+    //The problem is that there is two array.
     //if you find max1 in arr1 and max2 in arr2, but max1 == max2, then you need try both way and choose which is ultimate maxium in later.
     //using memorizing search to avoid repeated calculation from exponential time.
     const m = nums1.length, n = nums2.length;

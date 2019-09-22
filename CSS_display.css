@@ -1,18 +1,5 @@
-<div class='container'>
-  <div class='sq'>
-    <div class='circle'>
-    </div>
-  </div>
-   <div class='sq'>
-    <div class='circle'>
-    </div>
-  </div>
-   <div class='sq'>
-    <div class='circle'>
-    </div>
-  </div>
-</div>
-//by flex
+
+#by flex
 .container {
   border: 1px solid black;
   display: flex;
@@ -35,10 +22,9 @@
   background-color: yellow;
 }
 
-//by transform
+#by transform
 .container {
   border: 1px solid black;
-
 }
 
 .sq {
@@ -57,3 +43,18 @@
   transform: translate(-50%, -50%);
   background-color: yellow;
 }
+
+<div class='container'>
+  <div class='sq'>
+    <div class='circle'>
+    </div>
+  </div>
+   <div class='sq'>
+    <div class='circle'>
+    </div>
+  </div>
+   <div class='sq'>
+    <div class='circle'>
+    </div>
+  </div>
+</div>
