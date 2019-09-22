@@ -41,6 +41,12 @@ Constraints:
  * @return {number}
  */
 //DP O(n^2)
+//we initially have n blocks and 1 worker, save the num of blocks i, and workers j as state
+//we need to make decision divide worker to build  or split, let's say in some time, we put k worker to build, k can be zero
+//of course we will give them largest block to build to save the time.(greedy, sort the blocks first)
+//dp[i][j] = min(dp[i][2*j] + split (when k = 0), Math.max(blocks[i - 1], dp[i - 1][j - 1]) (when k = 1), ..., )
+//we can see, if we expend dp[i - 1][j - 1] = min(split + sp[i - 1][2 *j - 2], Math.max(blocks[i - 2], dp[i - 2][j - 2], ... ))
+//so dp[i - 1][j - 1] already include all the dp[i - 2][j - 2] ... to k
 var minBuildTime = function(blocks, split) {
     blocks.sort((a, b) => a - b);
     const n = blocks.length;
