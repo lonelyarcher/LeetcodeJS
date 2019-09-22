@@ -40,7 +40,7 @@ Constraints:
  * @param {number} split
  * @return {number}
  */
-//DP
+//DP O(n^2)
 var minBuildTime = function(blocks, split) {
     blocks.sort((a, b) => a - b);
     const n = blocks.length;
@@ -50,7 +50,10 @@ var minBuildTime = function(blocks, split) {
         if (j === 0) return Infinity;
         if (j >= i) return blocks[i - 1];
         if (m[i][j] !== undefined) return m[i][j];
-        m[i][j] = Math.min(split + sub(i, 2*j), Math.max(blocks[i - 1], sub(i - 1, j - 1)));
+        m[i][j] = Math.min(split + sub(i, 2*j), Math.max(blocks[i - 1], sub(i - 1, j - 1))); 
+        //Straightful, you need to calculate min of all [i, i-1, i-2, ..., i-k], 
+        //but i - 1 will use the same logic to cover min of [i - 1, i - 2, ..., i - k]
+        //so avoid repeating calculate, just take min of i and i - 1 is enough, time complexity from O(n) to o(1), since we have cached all pairs
         return m[i][j];
     };
     return sub(n, 1);
