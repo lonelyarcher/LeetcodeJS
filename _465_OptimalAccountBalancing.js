@@ -39,21 +39,43 @@ Therefore, person #1 only need to give person #0 $4, and all debt is settled. */
  * @param {number[][]} transactions
  * @return {number}
  */
+//DP, debt problem (NP) can be convert to find subset sum problem which can be solved by DP
 var minTransfers = function(transactions) {
     let p = transactions.reduce((a, c) => {
         a[c[0]] = (a[c[0]] || 0) + c[2];
         a[c[1]] = (a[c[1]] || 0) - c[2];
         return a;
-    }, []);
-    p = p.filter(i => i);
-    return p;
+    }, []).filter(i => i).sort();
+    //find minimum subset sum = 0, then in this subset, transaction will subset.length - 1; 
+    //DP subset sum neet all possible sum value, from negative sum to positive sum.
+    const min = p.filter(i => i < 0).reduce((a, c) => a + c, 0);
+    const max = p.filter(i => i > 0).reduce((a, c) => a + c, 0);
+    //find subset of arr which sum equals to 0 
+    let m;
+    const sub = (i, j) => {
+        if (j === p[i]) return [i];
+        if (i === 0) return null;
+        if (m[i][j] !== undefined) return m[i][j];
+        const p1 = sub(i - 1, j);
+        let p2 = sub(i - 1, j - p[i])
+        if (p2) p2 = p2.concat([i]);  
+        if (p1 === null) m[i][j] = p2;
+        else if (p2 === null) m[i][j] = p1;
+        else if (p1.length <= p2.length) m[i][j] = p1;
+        else m[i][j] = p2;
+        return m[i][j];
+    };
+    let ans = 0;
+    while (p.length) {
+        m = [...Array(p.length)].map(_ => ({}));
+        const subset = sub(p.length - 1, 0);
+        ans += subset.length - 1;
+        p = p.filter((c, i) => !subset.includes(i));
+    }
+    return ans;
 };
 
-const arr = [];
-arr[2] = 2;
-arr[3] = 3;
-console.log(arr.filter(i => i));
-
-
+console.log(minTransfers([[1,5,8],[8,9,8],[2,3,9],[4,3,1]]));
+console.log(minTransfers([[2,0,5],[3,4,4]])); //2
 console.log(minTransfers([[0,1,10], [2,0,5]]));//2
 console.log(minTransfers([[0,1,10], [1,0,1], [1,2,5], [2,0,5]]));//1

@@ -25,6 +25,5 @@ function createObject() {  //inside the function, "this" is decided by who calls
   
 createObject.call({foo: 21}).bar(); // override `this` inside createObject
 
-const s = [1,'a',1,1].join();
-console.info(s);
-console.info(s.split(',').join(' '));
+const array = Array(3).fill(undefined).map(_ => ({}));
+console.log(array);
