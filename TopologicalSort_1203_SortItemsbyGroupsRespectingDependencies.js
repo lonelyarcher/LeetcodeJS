@@ -28,12 +28,12 @@ beforeItems[i] does not contain duplicates elements. */
 //topological sort, first sort on groups, then sort on each group
 //1. first construct the topological function
 //2. grouping, make group graphic, then sort it
-//3. sort each group, and flat the sorted groups to get the answer
+//3. sort each group, and concat the sorted groups to the answer
 
 var sortItems = function(n, m, group, beforeItems) {
     
     //topologic sort need: vertices N, directed edge adj lists [[]]
-    const toposort = (N, edges) => {
+    const toposort = (N, edges) => { //starndard topological sort, arguments: N and edges,  it needs indegree[], adj 2D list, a queue to do BFS, result list.
         const ans = [];
         const indegree = Array(N).fill(0);
         const adj = [...Array(N)].map(() => []);
@@ -41,11 +41,11 @@ var sortItems = function(n, m, group, beforeItems) {
             indegree[next]++;
             adj[pre].push(next);
         }
-        const queue = indegree.filter(i => i === 0).map((c, i) => i);
+        const queue = indegree.reduce((a, c, i) => {if(c === 0) a.push(i); return a;}, []);
         while (queue.length) {
-            const n = queue.shift();
-            ans.push(n);
-            for (let post of adj[n]) {
+            const num = queue.shift();
+            ans.push(num);
+            for (let post of adj[num]) {
                 indegree[post]--;
                 if (indegree[post] === 0) queue.push(post);
             }
@@ -54,35 +54,43 @@ var sortItems = function(n, m, group, beforeItems) {
     };
 
     //group the items
-    const map = {};
+    const map = {}; //record each item's group#
     const groups = group.reduce((a, c, i) => {
-        if (c === -1) {
+        if (c === -1) { //single item group
             a.push([i]);
-            map[i] = a.length - 1;
+            map[i] = a.length - 1; //record it's group #
         } else {
             a[c] = a[c] || [];
             a[c].push(i);
+            map[i] = c;
         }
         return a;
     }, [...Array(m)].map(() => []));
-
-    const getIdx = c => group[c] === -1 ? map[c] : group[c];
+    //calculate group edges (gEdges) and inside edges for each group (iEdges)
     const gEdges = [], iEdges = [];
     for (let [i, c] of beforeItems.entries()) {
         for (let pre of c) {
             if (group[pre] !== group[i]) {               
-                gEdges.push([getIdx(pre), getIdx(i)]);
+                gEdges.push([map[pre], map[i]]);
             } else {
                 iEdges[group[pre]] = iEdges[group[pre]] || [];
                 iEdges[group[pre]].push([pre, i]);
             }
         }
     }
-
+    //first sort on groups
     const sortedGroups = toposort(groups.length, gEdges);
-    const ans = [];
+    //then for each group inside sort
+    let ans = [];
     for (let i of sortedGroups) {
-        const sorted = toposort(groups[i], iEdges[i]);
+        //before call toposort, you need convert vertices to its index array like [0,..., n-1] => N
+        const imap = groups[i].reduce((a, c, i) => {a[c] = i; return a;}, {});  //map help find index of item
+        let sorted = groups[i]
+        if (iEdges[i]) { //if no edges in this group, you can skip and concat this group, otherwise...
+            const edges = iEdges[i].map(edge => [imap[edge[0]], imap[edge[1]]]); //generate index base edges with imap
+            sorted = toposort(groups[i].length, edges).map(j => groups[i][j]);
+            if (!sorted.length) return [];
+        }
         ans = ans.concat(sorted);
     }
     return ans;

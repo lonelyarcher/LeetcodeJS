@@ -40,5 +40,20 @@ Therefore, person #1 only need to give person #0 $4, and all debt is settled. */
  * @return {number}
  */
 var minTransfers = function(transactions) {
-    
+    let p = transactions.reduce((a, c) => {
+        a[c[0]] = (a[c[0]] || 0) + c[2];
+        a[c[1]] = (a[c[1]] || 0) - c[2];
+        return a;
+    }, []);
+    p = p.filter(i => i);
+    return p;
 };
+
+const arr = [];
+arr[2] = 2;
+arr[3] = 3;
+console.log(arr.filter(i => i));
+
+
+console.log(minTransfers([[0,1,10], [2,0,5]]));//2
+console.log(minTransfers([[0,1,10], [1,0,1], [1,2,5], [2,0,5]]));//1
