@@ -41,41 +41,37 @@ Therefore, person #1 only need to give person #0 $4, and all debt is settled. */
  */
 //DP, debt problem (NP) can be convert to find subset sum problem which can be solved by DP
 var minTransfers = function(transactions) {
-    let p = transactions.reduce((a, c) => {
+    let p = transactions.reduce((a, c) => { //calculate debts for each person, filter out who has zero debt
         a[c[0]] = (a[c[0]] || 0) + c[2];
         a[c[1]] = (a[c[1]] || 0) - c[2];
         return a;
     }, []).filter(i => i).sort();
-    //find minimum subset sum = 0, then in this subset, transaction will subset.length - 1; 
-    //DP subset sum neet all possible sum value, from negative sum to positive sum.
-    const min = p.filter(i => i < 0).reduce((a, c) => a + c, 0);
-    const max = p.filter(i => i > 0).reduce((a, c) => a + c, 0);
-    //find subset of arr which sum equals to 0 
+    //find subset of arr which sum equals to 0, sub[i, j] = sub[i - 1, j] || sub[i - 1, j - arr[i]] + arr[i]
     let m;
     const sub = (i, j) => {
-        if (j === p[i]) return [i];
-        if (i === 0) return null;
+        if (j === p[i]) return [i];//when debt i has the same value as the target, that is what we need, shortest answer
+        if (i === 0) return null; //when reach last person, still has target sum not equal to its value, return null which means no way
         if (m[i][j] !== undefined) return m[i][j];
         const p1 = sub(i - 1, j);
         let p2 = sub(i - 1, j - p[i])
-        if (p2) p2 = p2.concat([i]);  
+        if (p2) p2 = p2.concat([i]); //p2 are from cache m, be careful to keep it immutability
         if (p1 === null) m[i][j] = p2;
         else if (p2 === null) m[i][j] = p1;
-        else if (p1.length <= p2.length) m[i][j] = p1;
+        else if (p1.length <= p2.length) m[i][j] = p1;//choose the shortest subset
         else m[i][j] = p2;
         return m[i][j];
     };
     let ans = 0;
     while (p.length) {
-        m = [...Array(p.length)].map(_ => ({}));
-        const subset = sub(p.length - 1, 0);
-        ans += subset.length - 1;
-        p = p.filter((c, i) => !subset.includes(i));
+        m = [...Array(p.length)].map(_ => ({}));//when map to {}, {} is first treated as a block, so need to add () to make it to be empty object
+        const subset = sub(p.length - 1, 0);//when find a minimum subset which sum = zero and length is n, the mini transaction is n - 1
+        ans += subset.size - 1;
+        p = p.filter((c, i) => !subset.includes(i));//remove the subset from the list and run the subset sum dp again
     }
     return ans;
 };
 
-console.log(minTransfers([[1,5,8],[8,9,8],[2,3,9],[4,3,1]]));
+console.log(minTransfers([[1,5,8],[8,9,8],[2,3,9],[4,3,1]]));//4
 console.log(minTransfers([[2,0,5],[3,4,4]])); //2
 console.log(minTransfers([[0,1,10], [2,0,5]]));//2
 console.log(minTransfers([[0,1,10], [1,0,1], [1,2,5], [2,0,5]]));//1
