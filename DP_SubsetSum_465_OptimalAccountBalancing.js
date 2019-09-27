@@ -40,7 +40,7 @@ Therefore, person #1 only need to give person #0 $4, and all debt is settled. */
  * @return {number}
  */
 //DP, debt problem (NP) can be convert to find subset sum problem which can be solved by DP, a polynomial time
-var minTransfers = function(transactions) {
+var minTransfers_DP = function(transactions) {
     let debts = transactions.reduce((a, c) => { //calculate debts for each person, filter out who has zero debt
         a[c[0]] = (a[c[0]] || 0) + c[2];
         a[c[1]] = (a[c[1]] || 0) - c[2];
@@ -69,6 +69,31 @@ var minTransfers = function(transactions) {
         debts = debts.filter((c, i) => !subset.includes(i));//remove the subset from the list and run the subset sum dp again
     }
     return ans;
+};
+
+//DFS, based on assumption, one person must solved the debt with a person who has opposite debit to him.
+//and it doesn't matter the order they solving. Only care of subset of solving chain.
+//it is actually explained in DP soluction, if we can find subset sum equals zero, then they can solved inside the set ignore the order.
+var minTransfers = function(transactions) {
+    let debts = transactions.reduce((a, c) => { //calculate debts for each person, filter out who has zero debt
+        a[c[0]] = (a[c[0]] || 0) + c[2];
+        a[c[1]] = (a[c[1]] || 0) - c[2];
+        return a;
+    }, []).filter(i => i);
+    const dfs = i => { //i will begin with first non-zero one
+        while (i < debts.length && debts[i] === 0) i++;
+        if (i === debts.length) return 0;
+        let ans = Infinity;
+        for (let j = i + 1; j < debts.length; j++) { //i to others
+            if (debts[i] * debts[j] < 0) {
+                debts[j] += debts[i];
+                ans = Math.min(ans, 1 + dfs(i + 1)); //remove i, and recursion
+                debts[j] -=  debts[i];
+            }
+        }
+        return ans; 
+    };
+    return dfs(0);
 };
 
 console.log(minTransfers([[1,5,8],[8,9,8],[2,3,9],[4,3,1]]));//4
