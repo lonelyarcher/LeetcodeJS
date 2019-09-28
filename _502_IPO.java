@@ -1,7 +1,6 @@
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
-import javafx.scene.layout.Priority;
 
 /* Suppose LeetCode will start its IPO soon. In order to sell a good price of 
 its shares to Venture Capital, LeetCode would like to work on some projects 
@@ -36,7 +35,7 @@ The length of Profits array and Capital array will not exceed 50,000.
 The answer is guaranteed to fit in a 32-bit signed integer. */
 
 
-class IPO {
+class _502_IPO {
     public int findMaximizedCapital(int k, int W, int[] Profits, int[] Capital) {
         TreeMap<Integer, Integer> cmap = new TreeMap<>();
         for (int i = 0; i < Profits.length; i++) {
@@ -49,7 +48,7 @@ class IPO {
         int ans = W;
         while(!heap.isEmpty()) {
             int newC = heap.poll();
-            for (Integer p : cmap.subMap(ans, anw + newC).values()) {
+            for (Integer p : cmap.subMap(ans, ans + newC).values()) {
                 heap.offer(p);
             }
             ans +=  newC;
@@ -58,7 +57,7 @@ class IPO {
         return ans;
     }
     public static void main(String[] args) {
-        IPO ipo = new IPO();
+        _502_IPO ipo = new _502_IPO();
         int ans = ipo.findMaximizedCapital(2, 0, new int[]{1, 2, 3}, new int[]{0, 1, 1});
         System.out.println(ans);
     }

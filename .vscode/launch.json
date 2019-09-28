@@ -6,17 +6,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - NumberOfValidSubarrays",
+            "name": "CodeLens (Launch) - _502_IPO",
             "request": "launch",
-            "mainClass": "NumberOfValidSubarrays",
-            "projectName": "leetcodejs_cc35096"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Solution",
-            "request": "launch",
-            "mainClass": "Solution",
-            "projectName": "leetcodejs_cc35096"
+            "mainClass": "_502_IPO",
+            "projectName": "leetcodejs_b444fdbb"
         },
         {
             "type": "java",
