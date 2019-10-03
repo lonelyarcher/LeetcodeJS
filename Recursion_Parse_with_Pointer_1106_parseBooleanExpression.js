@@ -40,7 +40,7 @@ expression is a valid expression representing a boolean, as given in the descrip
 const or = (a, b) => a || b;
 const and = (a, b) => a && b;
 const not = a => !a;
-var parseBoolExpr = function(expression) {
+var parseBoolExpr_st = function(expression) {
     let op = or, cur = false;
     const st = [];
     for (c of expression) {
@@ -68,13 +68,50 @@ var parseBoolExpr = function(expression) {
     return cur ? true : false;
 };
 
-console.log(parseBoolExpr('&(f,&( f,f,|(f)),t)')); //false
+//Recursion with a pointer i
+var parseBoolExpr = function(expression) {
+    let i = 0;
+    const parse = () => { //parse from current i, after parse move the point i to next position for next parse
+        let ans;
+        switch(expression.charAt(i++)) { //after read i, move the point to next position
+            case 't': 
+                return true;
+            case 'f': 
+                return false;
+            case '!': //!(t)
+                ans = !parse(++i);//skip (
+                i++; //skip )
+                return ans;
+            case '|': //|(t, t)
+                ans = false;
+                i++
+                while (true) {
+                    ans = parse(i) || ans; //make sure parse be executed, so put it at first
+                    if (expression.charAt(i++) === ')') break;
+                }
+                return ans;
+            case '&':
+                ans = true;
+                i++;
+                while (true) {
+                    ans = parse(i) && ans; //Mistake, before I write ans && parse(i), which cause error, because the && is short-circuit, if ans fails, then the parse will never be executed
+                    if (expression.charAt(i++) === ')') break;
+                }
+                return ans;
+        }      
+    };
+    return parse();
+};
 
+
+console.log(parseBoolExpr('&(f,&(f,f,|(f)),t)')); //false
 console.log(parseBoolExpr('|(&(t,f,t),!(t))')); //false
 console.log(parseBoolExpr('!(!(t))')); //true
-console.log(parseBoolExpr('!( &(f,&( f,f,|(f)),t) )')); //true
+console.log(parseBoolExpr('!(&(f,&(f,f,|(f)),t))')); //true
 console.log(parseBoolExpr('|(f)')); //false
 console.log(parseBoolExpr('&(f)')); //false
 console.log(parseBoolExpr('|(t)')); //true
-console.log(parseBoolExpr('&( f,f,|(f) )')); //false
-console.log(parseBoolExpr('t')); //true
+console.log(parseBoolExpr('&(f,f,|(f))')); //false
+console.log(parseBoolExpr('&(!(t),&(f),|(f))')); //false
+
+console.log(parseBoolExpr("&(&(&(!(&(f)),&(t),|(f,f,t)),|(t),|(f,f,t)),!(&(|(f,f,t),&(&(f),&(!(t),&(f),|(f)),&(!(&(f)),&(t),|(f,f,t))),&(t))),&(!(&(&(!(&(f)),&(t),|(f,f,t)),|(t),|(f,f,t))),!(&(&(&(t,t,f),|(f,f,t),|(f)),!(&(t)),!(&(|(f,f,t),&(&(f),&(!(t),&(f),|(f)),&(!(&(f)),&(t),|(f,f,t))),&(t))))),!(&(f))))"));
