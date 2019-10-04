@@ -6,13 +6,10 @@ The encoded string should be as compact as possible.
 
 Note: Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless. */
 
-/**
- * Definition for a binary tree node.
- * function TreeNode(val) {
- *     this.val = val;
- *     this.left = this.right = null;
- * }
- */
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+}
 
 /**
  * Encodes a tree to a single string.
@@ -21,7 +18,15 @@ Note: Do not use class member/global/static variables to store states. Your seri
  * @return {string}
  */
 var serialize = function(root) {
-    
+    const ans = [];
+    const inorder = root => {
+        if (!root) return;
+        ans.push(root.val);
+        inorder(root.left);
+        inorder(root.right);
+    };
+    inorder(root);
+    return new Int16Array(ans);
 };
 
 /**
@@ -31,10 +36,27 @@ var serialize = function(root) {
  * @return {TreeNode}
  */
 var deserialize = function(data) {
-    
+    if (!data || !data.length) return null;
+    let i = 0;
+    const construct = (l, r) => {
+        if (i === data.length) return null;
+        const value = data[i];
+        if (value < l || value > r) return null;
+        const root = new TreeNode(value);
+        i++;
+        root.left = construct(l, value);
+        root.right = construct(value, r);
+        return root;
+    };
+    return construct(-Infinity, Infinity);
 };
 
 /**
  * Your functions will be called as such:
  * deserialize(serialize(root));
  */
+const root = new TreeNode(2);
+root.left = new TreeNode(1);
+root.right = new TreeNode(3);
+console.log(serialize(root).toString());
+console.log(deserialize(serialize(root)));
