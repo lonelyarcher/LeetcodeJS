@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Codec",
+            "request": "launch",
+            "mainClass": "Codec",
+            "projectName": "leetcodejs_b444fdbb"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - _502_IPO",
             "request": "launch",
             "mainClass": "_502_IPO",
