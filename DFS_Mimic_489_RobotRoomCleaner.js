@@ -84,41 +84,32 @@ Assume all four edges of the grid are all surrounded by wall. */
  * @param {Robot} robot
  * @return {void}
  */
-//state: i, j, one of dir([[0, 1], [1, 0], [0, -1], [-1, 0]])
-//move forward: i + d, j + d
+//key point is mimic the dfs back tracking. search all possible way by recursion after it track back. (robot.back() funciton is needed)
+//You don't have coordinate available, but you can create virtue ones for visited position, avoid repeating
+//dfs by status: i, j, idx of dir([[0, 1], [1, 0], [0, -1], [-1, 0]])
+//move forward: i + dir[d][0], j + dir[d][1]
 //turn right: d = (d + 1) % 4
-//turn left: d = (d + 3) % 4  
+//turn left is not necessary, 3 right turn === left turn
 var cleanRoom = function(robot) {
-    const visited = {'0_0': true};
-    const dir = [[0, 1], [1, 0], [0, -1], [-1, 0]];
-    const back = () => {
+    const visited = {}; //the virtual col and row can be negative and unknown boundary, so construct unique key: row_col
+    const dir = [[0, 1], [1, 0], [0, -1], [-1, 0]]; //direction, clockwise is turn right
+    const back = () => { //back track need to call it
         robot.turnRight();
         robot.turnRight();
         robot.move();
         robot.turnRight();
         robot.turnRight();
     }
-    const forward = (i, j, d) => {
-        if (!visited[`${i + dir[d]}_${j + dir[d]}`] && robot.move()) {
-            visited[`${i + dir[d]}_${j + dir[d]}`] = true;
-            dfs(i + dir[d], j + dir[d], d);
-        } return false;
-    }
     const dfs = (i, j, d) => {
-        robot.clean();
-        if (!forward(i, j, d)) {
-            robot.turnRight();
-            const r = (d + 1) % 4;
-            if (!forward(i, j , r)) {
-                robot.turnLeft();
-                robot.turnLeft();
-                const l = (d + 3) % 4;
-                if (!forward(i, j, l)) {
-                    robot.turnRight();
-                    back();
-                    dfs(i - d[0], j - d[1], d);
-                }
+        visited[`${i}_${j}`] = true; //set visited
+        robot.clean(); 
+        for (let k = 0; k < 4; k++) { //Mistake, be care of varialbe name not collision
+            const nd = (d + k) % 4;
+            if(!visited[`${i + dir[nd][0]}_${j + dir[nd][1]}`] && robot.move()) { //need not visited and position valid by move()
+                dfs(i + dir[nd][0], j + dir[nd][1], nd);
+                back(); //back track immidiately after recursion call
             }
+            robot.turnRight(); //4 right turn back to original direction
         }
     };
     dfs(0, 0, 0);
