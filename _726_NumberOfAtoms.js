@@ -38,6 +38,26 @@ formula will only consist of letters, digits, and round parentheses, and is a va
  * @param {string} formula
  * @return {string}
  */
-var countOfAtoms = function(formula) {
-    
+const add = (a, b) => {
+    const ans = {};
+    Object.keys(a).forEach(k => {ans[k] = a[k];});
+    Object.keys(b).forEach(k => {ans[k] = ans[k] || 0; ank[k] += b[k];});
+    return ans;
 };
+const mult = (a, k) => Object.keys(a).forEach(k => {a[k] *= k;});
+var countOfAtoms = function(formula) {
+    let i = 0;
+    const st = []; map = {};
+    const parse = () => {
+        const c = formula.charAt(i);
+        if (/[A-Z]/.test(c)) {
+
+        }
+    };
+    parse();
+    return Object.keys(map).sort().map(k => map[k] === 1 ? k : k + map[k]).join('');
+};
+
+console.log(customElements('H2O)'));//H20.
+console.log(customElements('Mg(OH)2'));//Output: "H2MgO2"
+console.log(customElements("K4(ON(SO3)2)2"));//"K4N2O14S4"
