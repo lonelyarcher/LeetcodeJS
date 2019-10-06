@@ -40,7 +40,7 @@ const floor = (a, k) => { // last LE = first GT - 1
         if (a[mid] > k) r = mid;
         else l = mid + 1;
     }
-    return l + 1;
+    return l - 1;
 };
 
 const ceiling = (a, k) => { //  first GE
