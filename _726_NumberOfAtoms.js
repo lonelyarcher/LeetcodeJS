@@ -47,11 +47,26 @@ const add = (a, b) => {
 const mult = (a, k) => Object.keys(a).forEach(k => {a[k] *= k;});
 var countOfAtoms = function(formula) {
     let i = 0;
-    const st = []; map = {};
+    const st = []; 
+    let map = {};
     const parse = () => {
-        const c = formula.charAt(i);
+        const c = formula.charAt(i++);
         if (/[A-Z]/.test(c)) {
-
+            const e = '';
+            while (/[a-z]/.test(formula.charAt(i))) e += formula.charAt(i++);
+            const v = 0;
+            while (/[0-9]/.test(formula.charAt(i))) v = v * 10 + parseInt(formula.charAt(i++));
+            if (v === 0) v = 1;
+            map[e] = map[e] || 0;
+            map[e] += v;
+        } else if (c === '(') {
+            st.unshift(map);
+            map = {};
+            parse();
+        } else if (c === ')') {
+            while (/[0-9]/.test(formula.charAt(i))) 
+            const preMap = st.shift();
+            map = add(map, preMap);
         }
     };
     parse();
