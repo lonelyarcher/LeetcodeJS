@@ -38,41 +38,43 @@ formula will only consist of letters, digits, and round parentheses, and is a va
  * @param {string} formula
  * @return {string}
  */
-const add = (a, b) => {
-    const ans = {};
-    Object.keys(a).forEach(k => {ans[k] = a[k];});
-    Object.keys(b).forEach(k => {ans[k] = ans[k] || 0; ank[k] += b[k];});
-    return ans;
-};
-const mult = (a, k) => Object.keys(a).forEach(k => {a[k] *= k;});
+
 var countOfAtoms = function(formula) {
     let i = 0;
-    const st = []; 
-    let map = {};
-    const parse = () => {
-        const c = formula.charAt(i++);
-        if (/[A-Z]/.test(c)) {
-            const e = '';
-            while (/[a-z]/.test(formula.charAt(i))) e += formula.charAt(i++);
-            const v = 0;
-            while (/[0-9]/.test(formula.charAt(i))) v = v * 10 + parseInt(formula.charAt(i++));
-            if (v === 0) v = 1;
-            map[e] = map[e] || 0;
-            map[e] += v;
-        } else if (c === '(') {
-            st.unshift(map);
-            map = {};
-            parse();
-        } else if (c === ')') {
-            while (/[0-9]/.test(formula.charAt(i))) 
-            const preMap = st.shift();
-            map = add(map, preMap);
-        }
+    const parseNum = () => {
+        let v = 0;
+        while (i < formula.length && /[0-9]/.test(formula.charAt(i))) v = v * 10 + parseInt(formula.charAt(i++));
+        return v === 0 ? 1 : v;
     };
-    parse();
+    const parse = () => {
+        const map = {};
+        while (i < formula.length && formula.charAt(i) !== ')') { //parsing need continue until to its end or reach ')' when recursion
+            const c = formula.charAt(i++);
+            if (/[A-Z]/.test(c)) {
+                let e = c;
+                while (i < formula.length && /[a-z]/.test(formula.charAt(i))) 
+                    e += formula.charAt(i++); //every while loop be careful about the end of index
+                map[e] = (map[e] || 0) + parseNum();
+            } else if (c === '(') {
+                const innerMap = parse();
+                for (let key in innerMap) {
+                    map[key] = (map[key] || 0) + innerMap[key];
+                }
+            }
+        } 
+        if (formula.charAt(i) === ')') {
+            i++
+            const k = parseNum();
+            for (let key in map) {
+                map[key] *= k;
+            }
+        }
+        return map;
+    };
+    const map = parse();
     return Object.keys(map).sort().map(k => map[k] === 1 ? k : k + map[k]).join('');
 };
 
-console.log(customElements('H2O)'));//H20.
-console.log(customElements('Mg(OH)2'));//Output: "H2MgO2"
-console.log(customElements("K4(ON(SO3)2)2"));//"K4N2O14S4"
+console.log(countOfAtoms('H2O'));//H20.
+console.log(countOfAtoms('Mg(OH)2'));//Output: "H2MgO2"
+console.log(countOfAtoms("K4(ON(SO3)2)2"));//"K4N2O14S4"
