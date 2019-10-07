@@ -23,6 +23,9 @@ The length of T will be in the range [1, 100]. */
  * @param {string} T
  * @return {string}
  */
+//DP: the largest index of start of substring [ss, se] to cover subsequence t = dp(se, te)
+//dp(se, te) = dp(se - 1, te) or dp(se - 1, te - 1) if s.charAt(se) === t.charAt(te)  
+
 var minWindow = function(S, T) {
     
 };
