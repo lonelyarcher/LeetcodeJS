@@ -83,8 +83,8 @@ var numSimilarGroups = function(A) {
     return new Set(uf.parents.map((c, i) => uf.find(i))).size;
 };
 
-//Another approach, O(NW^3) to construct the UF
-//enumerate all possible neighbors of each word, O(NW^3)
+//Another approach, O(NW^3) to construct the UF, O(n) to find count of groups
+//enumerate all possible neighbors of each word and union, O(NW^3)
 var numSimilarGroups_enumerate = function(A) {
     const N = A.length;
     const uf = new UF(N);
