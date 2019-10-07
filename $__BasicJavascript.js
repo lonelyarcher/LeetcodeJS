@@ -55,3 +55,5 @@ console.log(1^1); //0
 
 console.log(~~(3/2));//1
 console.log(~~(-1.232));//-1
+
+if (-1) console.log("-1 is true!");
