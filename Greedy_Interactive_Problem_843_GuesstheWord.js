@@ -72,13 +72,14 @@ const match = (w1, w2) => {
 //the two word if len = 6, the probability of 0 match is (25/26) ^ 6 = 80%, 
 //so the short solution may be only guess the min 0 match word
 //iteration has less overhead than recursion
-var findSecretWord = function(wordlist, master) {
+var findSecretWord2 = function(wordlist, master) {
     for (let k = 0; k < 10; k++) {
         const count = Array(wordlist.length).fill(0);
         for (let i = 0; i < wordlist.length; i++) {
             for (let j = i + 1; j < wordlist.length; j++) {
                 if (match(wordlist[i], wordlist[j]) === 0) {
-                    count[i] = count[j] = 0;
+                    count[i]++;
+                    count[j]++;
                 };
             }
         }
@@ -96,11 +97,11 @@ class Master {
         this.word = word;
     }
     guess(w) {
-        let ans = this.wordlist.includes(w) ? -1 : match(w, this.word);
+        let ans = !this.wordlist.includes(w) ? -1 : match(w, this.word);
         console.log("return " + ans);
         return ans;
     }
 }
 
 const master = new Master("acckzz", ["acckzz","ccbazz","eiowzz","abcczz"]);
-findSecretWord(master.wordlist, master);
+findSecretWord2(master.wordlist, master);
