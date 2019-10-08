@@ -41,6 +41,66 @@ We made 5 calls to master.guess and one of them was the secret, so we pass the t
  * @param {Master} master
  * @return {void}
  */
+
+
 var findSecretWord = function(wordlist, master) {
-    
+    const similar = [...Array(wordlist.length)].map(() => ({}));
+    for (let i = 0; i < wordlist.length; i++) {
+        for (let j = i + 1; j < wordlist.length; j++) {
+            const m = match(wordlist[i], wordlist[j]);
+            similar[i][m] = similar[i][m] || [];
+            similar[i][m].push(wordlist[j]);
+            similar[j][m] = similar[j][m] || [];
+            similar[j][m].push(wordlist[i]);
+        }
+    }
+    const maxMatchSize = similar.map(s => s.reduce((a, c) => c.length > a ? c.length : a, 0));
+    const guess = maxMatchSize.reduce((a, c, i, arr) => c < arr[a] ? i : a);
+    const score = master.guess(wordlist[guess]);
+    if (score === wordlist[guess].length) return;
+    if (similar[guess][score]) findSecretWord(similar[guess][score], master);
 };
+
+const match = (w1, w2) => {
+    let match = 0;
+    for (let k = 0; k < Math.min(w1.length, w2.length); k++) {
+        if (w1.charAt(k) === w2.charAt(k)) match++;
+    }
+    return match;
+};
+
+//the two word if len = 6, the probability of 0 match is (25/26) ^ 6 = 80%, 
+//so the short solution may be only guess the min 0 match word
+//iteration has less overhead than recursion
+var findSecretWord = function(wordlist, master) {
+    for (let k = 0; k < 10; k++) {
+        const count = Array(wordlist.length).fill(0);
+        for (let i = 0; i < wordlist.length; i++) {
+            for (let j = i + 1; j < wordlist.length; j++) {
+                if (match(wordlist[i], wordlist[j]) === 0) {
+                    count[i] = count[j] = 0;
+                };
+            }
+        }
+        const candidate = wordlist[count.reduce((a, c, i) => c < count[a] ? i : a, 0)];
+        const score = master.guess(candidate);
+        if (score.length === candidate.length) return;
+        wordlist = wordlist.filter(c => match(candidate, c) === score);
+    }
+}
+
+
+class Master {
+    constructor(word, wordlist) {
+        this.wordlist = wordlist;
+        this.word = word;
+    }
+    guess(w) {
+        let ans = this.wordlist.includes(w) ? -1 : match(w, this.word);
+        console.log("return " + ans);
+        return ans;
+    }
+}
+
+const master = new Master("acckzz", ["acckzz","ccbazz","eiowzz","abcczz"]);
+findSecretWord(master.wordlist, master);
