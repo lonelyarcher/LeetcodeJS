@@ -39,7 +39,8 @@ The total number of FreqStack.push and FreqStack.pop calls will not exceed 15000
 
 
 var FreqStack = function() {
-    
+    this.count = {}; //save element and its count
+    this.freqs = []; //2 dimension array, each frequency will has a array to save the numbers which frequency is equal to its index.
 };
 
 /** 
@@ -47,14 +48,20 @@ var FreqStack = function() {
  * @return {void}
  */
 FreqStack.prototype.push = function(x) {
-    
+    this.count[x] = (this.count[x] || 0) + 1;
+    this.freqs[this.count[x]] = this.freqs[this.count[x]] || [];
+    this.freqs[this.count[x]].push(x);
 };
 
 /**
  * @return {number}
  */
 FreqStack.prototype.pop = function() {
-    
+    const ans = this.freqs[this.freqs.length - 1].pop();
+    this.count[ans]--;
+    if (!this.freqs[this.freqs.length - 1].length) this.freqs.pop();
+    console.log(ans);
+    return ans;
 };
 
 /** 
@@ -63,3 +70,39 @@ FreqStack.prototype.pop = function() {
  * obj.push(x)
  * var param_2 = obj.pop()
  */
+const stack = new FreqStack();
+stack.push(5);
+stack.push(7);
+stack.push(5);
+stack.push(7);
+stack.push(4);
+stack.push(5);
+stack.pop();
+stack.pop();
+stack.pop();
+stack.pop();
+console.log("stack2:");
+const stack2 = new FreqStack();
+stack2.push(4);
+stack2.push(0);
+stack2.push(9);
+stack2.push(3);
+stack2.push(4);
+stack2.push(2);
+stack2.pop();
+stack2.push(6);
+stack2.pop();
+stack2.push(1);
+stack2.pop();
+stack2.push(1);
+stack2.pop();
+stack2.push(4);
+stack2.pop();
+stack2.pop();
+stack2.pop();
+stack2.pop();
+stack2.pop();
+stack2.pop();
+//["FreqStack","push","push","push","push","push","push","pop","push","pop","push","pop","push","pop","push","pop","pop","pop","pop","pop","pop"]
+//[[],[4],[0],[9],[3],[4],[2],[],[6],[],[1],[],[1],[],[4],[],[],[],[],[],[]]
+ 
