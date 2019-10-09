@@ -41,6 +41,22 @@ Note:
  * @param {number} N
  * @return {number}
  */
+//if take x floor, if unbroken, f(k, n) = Min(Max(f(k, n - x), f(k - 1, x - 1)) x = 1 to n)
 var superEggDrop = function(K, N) {
-    
+    const dp = [...Array(K + 1)].map(() => Array(N + 1).fill(undefined));
+    const f = (k, n) => {
+        if (n === 0) return 0;
+        if (k === 0) return Infinity; 
+        if (dp[k][n] !== undefined) return dp[k][n];
+        dp[k][n] = Infinity;
+        for (let i = 1; i <= n; i++) {
+            dp[k][n] = Math.min(dp[k][n], 1 + Math.max(f(k - 1, i - 1), f(k, n - i)));
+        }
+        return dp[k][n];
+    };
+    return f(K, N);
 };
+
+console.log(superEggDrop(K = 1, N = 2)); //2
+console.log(superEggDrop(K = 2, N = 6)); //3
+console.log(superEggDrop(K = 3, N = 14)); //4
