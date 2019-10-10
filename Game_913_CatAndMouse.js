@@ -46,48 +46,50 @@ It is guaranteed that graph[2] contains a non-zero element.  */
 // and record the key 50 * mouse + cat to set, if repeated in key, return 0 draw . 
 // if mouse reach 0, mouse win, return 1
 // if mouse can't move, all neighbor invalid, return 2, cat win
+//unfortunately, the cat's strategy is wrong, first there are possible multiple same distant nodes. 
+//Most important it didn't consider blocking the mouse to the hole.  
 
+
+//Still need to consider dp to find recursive formula, game theory always involve the DP with MinMax
+//find the minimum of cost for the worst case of  next step, your opponent(rival) use the same strategy to get the maximal gain)
+//state: Node (cat_pos, mouse_pos, cat/mouse)
+//(i, j , 0) mouse wins if one of neighbors can reach 0, some (nei, j, 1) === 1
+//           cat wins if all of nei return 2, all (nei, j, 1) === 2
+//           draw if none of neighbor wins, at least one return 0, or it repeat previous state
+//(i, j , 1) cat wins if one of j's neighbors return 2
+//           mouse wins if all neighbors return 1
+//           draw if none return 2, at least one return 0 or repeated 
+// if repeated, it will take foreever to stop, so if move 2*n step, we stop and return 0
 var catMouseGame = function (graph) {
-    const seen = new Set();
-    const bfs = node => {
-        const seen = new Set([node]);
-        const st = [node], dist = [];
-        let d = 0;
-        while (st.length) {
-            const len = st.length;
-            for (let i = 0; i < len; i++) {
-                const cur = st.shift();
-                dist[cur] = d;
-                for (let ne of graph[cur]) {
-                    if (!seen.has(ne)) {
-                        st.push(ne);
-                        seen.add(ne);
-                    }
-                }
+    const n = graph.length;
+    const dp = [...Array(n)].map(() => [...Array(n)].map(() => Array(2).fill(undefined)));
+    const rec = (i, j, w) => {
+        if (i === j) return 2; //cat and mouse are in same position
+        if (i === 0) return 1; //mouse reach hole
+        if (dp[i][j][w] !== undefined) return dp[i][j][w];
+        if (w === 0) { //mouse
+            let hasDraw = false;
+            for (let nei of graph[i]) {
+                const res = rec(nei, j, 1);
+                if (res === 1) return dp[i][j][w] = 1;
+                if (res === 0) hasDraw = true;
             }
-            d++;
+            return !hasDraw ? dp[i][j][w] = 2 : dp[i][j][w] = 0; 
+        } else { //cat
+            let hasDraw = false;
+            for (let nei of graph[j]) {
+                if (nei === 0) continue;        
+                const res = rec(i, nei, 0);
+                if (res === 2) return dp[i][j][w] = 2;
+                if (res === 0) hasDraw = true;
+            }
+            return !hasDraw ? dp[i][j][w] = 1 : dp[i][j][w] = 0; 
         }
-        return dist;
-    };
-    const dist0 = bfs(0);
-    let cat = 2, mouse = 1;
-    while (true) {
-        //mouse
-        const cat_pos = [cat].concat(graph[cat]);
-        const mouse_ne = graph[mouse].filter(ne => !cat_pos.includes(ne));
-        if (!mouse_ne) return 2;
-        if (mouse_ne.includes(0)) return 1;
-        mouse = mouse_ne.reduce((a, c) => dist0[c] < dist0[a] ? c : a);
-        //cat
-        const dist_mouse = bfs(mouse);
-        cat = graph[cat].filter(ne => ne !== 0).reduce((a, c) => dist_mouse[c] < dist_mouse[a] ? c : a);
-        const key = mouse * 50 + cat;
-        if(seen.has(key)) return 0;
-        else seen.add(key);
     }
+    return rec(1, 2, 0);
 };
 
-console.log(catMouseGame([[2,5],[3],[0,4,5],[1,4,5],[2,3],[0,2,3]])); //0
-
-console.log(catMouseGame([[3,4],[3,5],[3,6],[0,1,2],[0,5,6],[1,4],[2,4]])); //0
+//console.log(catMouseGame([[2,5],[3],[0,4,5],[1,4,5],[2,3],[0,2,3]])); //0
+//console.log(catMouseGame([[3,4],[3,5],[3,6],[0,1,2],[0,5,6],[1,4],[2,4]])); //0
+console.log(catMouseGame([[6],[4],[9],[5],[1,5],[3,4,6],[0,5,10],[8,9,10],[7],[2,7],[6,7]])); //1
 
