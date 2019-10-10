@@ -1,4 +1,5 @@
-/* Alex and Lee continue their games with piles of stones.  There are a number of piles arranged in a row, and each pile has a positive integer number of stones piles[i].  The objective of the game is to end with the most stones. 
+/* Alex and Lee continue their games with piles of stones.  There are a number of piles arranged in a row,
+ and each pile has a positive integer number of stones piles[i].  The objective of the game is to end with the most stones. 
 
 Alex and Lee take turns, with Alex starting first.  Initially, M = 1.
 
@@ -15,7 +16,9 @@ Example 1:
 
 Input: piles = [2,7,9,4,4]
 Output: 10
-Explanation:  If Alex takes one pile at the beginning, Lee takes two piles, then Alex takes 2 piles again. Alex can get 2 + 4 + 4 = 10 piles in total. If Alex takes two piles at the beginning, then Lee can take all three piles left. In this case, Alex get 2 + 7 = 9 piles in total. So we return 10 since it's larger. 
+Explanation:  If Alex takes one pile at the beginning, Lee takes two piles, then Alex takes 2 piles again. Alex can get 2 + 4 + 4 = 10 piles in total. 
+If Alex takes two piles at the beginning, then Lee can take all three piles left. In this case, Alex get 2 + 7 = 9 piles in total. So we return 10 
+since it's larger. 
  
 
 Constraints:

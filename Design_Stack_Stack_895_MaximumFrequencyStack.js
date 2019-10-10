@@ -103,6 +103,3 @@ stack2.pop();
 stack2.pop();
 stack2.pop();
 stack2.pop();
-//["FreqStack","push","push","push","push","push","push","pop","push","pop","push","pop","push","pop","push","pop","pop","pop","pop","pop","pop"]
-//[[],[4],[0],[9],[3],[4],[2],[],[6],[],[1],[],[1],[],[4],[],[],[],[],[],[]]
- 

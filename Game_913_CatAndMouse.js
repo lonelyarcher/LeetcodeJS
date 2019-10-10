@@ -4,7 +4,8 @@ The graph is given as follows: graph[a] is a list of all nodes b such that ab is
 
 Mouse starts at node 1 and goes first, Cat starts at node 2 and goes second, and there is a Hole at node 0.
 
-During each player's turn, they must travel along one edge of the graph that meets where they are.  For example, if the Mouse is at node 1, it must travel to any node in graph[1].
+During each player's turn, they must travel along one edge of the graph that meets where they are.  
+For example, if the Mouse is at node 1, it must travel to any node in graph[1].
 
 Additionally, it is not allowed for the Cat to travel to the Hole (node 0.)
 
