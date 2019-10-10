@@ -41,7 +41,9 @@ We made 5 calls to master.guess and one of them was the secret, so we pass the t
  * @param {Master} master
  * @return {void}
  */
-
+//Minmax game strategy, guess to minimize the worst case lost. 
+//Here worst case is the guess result longest match list for the follow guess.
+//so we need to guess the word which has minimum size of maxium match list, so even the worst case, we get the maximum list but it still the our best choice.
 
 var findSecretWord = function(wordlist, master) {
     const similar = [...Array(wordlist.length)].map(() => ({}));
