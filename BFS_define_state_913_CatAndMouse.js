@@ -69,7 +69,7 @@ It is guaranteed that graph[2] contains a non-zero element.  */
 
 
 
-//BFS solution worked, time O(n^3), space O(n^2). 
+//BFS solution worked, time O(n^3), space O(n^2). total n^2 states O(n^2) X each state go through neighbors of node O(n)
 //The key part is to avoiding to calculate Draw at the first place.
 //it expends from all known stats, start to mark the determined state for mouse win and cat win around it.
 //0. initially (0, j, m/c) = 1, (j, j, m/c) = 2, 
