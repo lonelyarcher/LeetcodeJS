@@ -41,6 +41,39 @@ Note:
  * @param {number[][]} grid
  * @return {number}
  */
+//DFS, O(m*n)
 var uniquePathsIII = function(grid) {
-    
+    const m = grid.length, n = grid[0].length;
+    const visited = [...Array(m)].map(() => Array(n).fill(false));
+    let count = 0, start;
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (grid[i][j] === 1) start = [i , j];
+            if (grid[i][j] === 0) count++;
+        }
+    }
+    let ans = 0;
+    const dir = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+    const dfs = (cur, len) => {
+        const [i, j] = cur;
+        if (grid[i][j] === 2 && len === count + 1) { //include end, count + 1
+            ans++;
+        } else {
+            for (let d of dir) {
+                const [ni, nj] = [i + d[0], j + d[1]];
+                if (ni >= 0 && ni < m && nj >= 0 && nj < n && grid[ni][nj] !== -1 && !visited[ni][nj]) {
+                    visited[ni][nj] = true;
+                    dfs([ni, nj], len + 1);
+                    visited[ni][nj] = false;
+                }
+            }
+        }
+    };
+    visited[start[0]][start[1]] = true;
+    dfs(start, 0);
+    return ans;
 };
+
+console.log(uniquePathsIII([[1,0,0,0],[0,0,0,0],[0,0,2,-1]])); //2
+console.log(uniquePathsIII([[1,0,0,0],[0,0,0,0],[0,0,0,2]])); //4
+console.log(uniquePathsIII([[0,1],[2,0]])); //0
