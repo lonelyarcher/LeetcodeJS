@@ -62,3 +62,5 @@ let xxx;
 console.log(xxx = 100);
 
 console.log([...Array(10)].reduce((a, c) => a * 2, 1));
+var num = 100;
+console.log(num.toString(16));
