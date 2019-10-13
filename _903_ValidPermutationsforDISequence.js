@@ -31,6 +31,27 @@ S consists only of characters from the set {'D', 'I'}. */
  * @param {string} S
  * @return {number}
  */
+//DP, state first i pattern, the last number is j, 0 <= i <= S.length, 0 <= j <= S.length
+//init: dp[0][j] = 1, 
+//recursive formula: dp[i][j] = S.char(i - 1) === 'D', sum of dp[i - 1][k] k > j, 'I' sum of dp[i - 1][k] k < j
 var numPermsDISequence = function(S) {
-    
+    const n = S.length;
+    const dp = [...Array(n + 1)].map(() => Array(n + 1).fill(0));
+    for (let j = 0; j <= n; j++) dp[0][j] = 1;
+    for (let i = 1; i <= n; i++) {
+        for (let j = 0; j <= n; j++) {
+            if (S.charAt(i - 1) === 'D') {
+                for (let k = j + 1; k <= n; k++) {
+                    dp[i][j] += dp[i - 1][k];
+                }
+            } else {
+                for (let k = 0; k < j; k++) {
+                    dp[i][j] += dp[i - 1][k];
+                }
+            }
+        }
+    }
+    return dp[n].reduce((a, b) => a + b);
 };
+
+console.log(numPermsDISequence('DID')); //5
