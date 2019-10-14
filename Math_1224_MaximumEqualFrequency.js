@@ -32,20 +32,23 @@ Constraints:
  * @param {number[]} nums
  * @return {number}
  */
+//four senarios: 
+//1. every num appear once [1, 2, 3, 4, ...] 
+//2. only one num [1, 1, 1, ...]
+//3. one num appear once, all other appear in same count [1, 2, 2, 3, 3]
+//4. only two frequencies, freq with greater number has one more count than lower frequency, [2, 2, 3, 3, 3, 4, 4]
+//we can maintain the maxCount number and occupancy to solve 1. maxCount === 1, 2. maxCount + 1 === i + 1 , 
+//3, 4 you need to maintain frequencies count, so 3. maxCount * its freq + 1 === i, 2 and 3 can be in same condition 2's freq is 1.
+//4, the maxCount will has one more than all other's count, maxCount + (maxCount - 1) * freq[maxCount - 1] === i + 1
 var maxEqualFreq = function(nums) {
-    
-    let maxL = 2;
-    const count = {}, cc = {};
+    let maxL = 0, maxCount = 0;
+    const count = {}, freqCount = {};
     for (let i = 0; i < nums.length; i++) {
-        const preCount = count[nums[i]] || 0;
-        count[nums[i]] = preCount + 1;
-        if (preCount !== 0) {
-            cc[preCount]--;
-            if (cc[preCount] === 0) delete cc[preCount];
-        }
-        cc[count[nums[i]]] = (cc[count[nums[i]]] || 0) + 1;
-        const lens = Object.values(cc);
-        if (Object.values(count).length === 1 || (lens.length === 1 && count[nums[0]] === 1) || (lens.length == 2 && (cc[Math.min(Object.keys(cc))] === 1))) maxL = Math.max(maxL, i + 1);
+        count[nums[i]] = (count[nums[i]] || 0) + 1;
+        freqCount[count[nums[i]]] = (freqCount[count[nums[i]]] || 0) + 1;
+        freqCount[count[nums[i]] - 1]--;
+        maxCount = Math.max(maxCount, count[nums[i]]);
+        if (maxCount === 1 || maxCount * freqCount[maxCount] + 1 === i + 1 || maxCount + (maxCount - 1) * freqCount[maxCount - 1] === i + 1) maxL = Math.max(maxL, i + 1);
     }
     return maxL;
     
