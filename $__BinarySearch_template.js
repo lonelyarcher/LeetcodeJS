@@ -1,17 +1,30 @@
-const arr = [1,2,3,4,5,6], target = 1;
-//find the first small or equal to 1
-const binarySearch = (arr, target) => {
-    let l = 0, r = arr.length - 1;
-    while (r - l > 1) { //avoid dead loop, so stop at r = l + 1;
-        const mid = parseInt(l + (r - l) / 2);
-        if (arr[mid] <= target) { //when satisfy the condition
-            l = mid; //include in l
+const arr = [1,2,3,4,5,6], target = 3;
+//find left insert pos for target / the first GE to target
+const biset_left = (arr, target) => {
+    let l = 0, r = arr.length;
+    while (l < r) { 
+        const mid = ~~((l + r) / 2);
+        if (arr[mid] >= target) { 
+            r = mid; 
         } else {
-            r = mid - 1; //unsatisfied, exclude in r
+            l = mid + 1; 
         }
     }
-    return arr[r] <= target ? r : (arr[l] <= target ? l : -1); 
-    //because we want to find as larger as possible, so first check r satisfied or not, if yes return r.
-    //then checke l, if satisfied return l. if both unsatisfied, return not found -1.
+    return l; 
 }
-console.log(binarySearch(arr, target));
+//find right insert pos for target, which means first LT 
+const biset_right = (arr, target) => {
+    let l = 0, r = arr.length;
+    while (l < r) { 
+        const mid = ~~((l + r) / 2);
+        if (arr[mid] > target) { 
+            r = mid; 
+        } else {
+            l = mid + 1; 
+        }
+    }
+    return l; 
+}
+
+console.log(biset_left(arr, target));
+console.log(biset_right(arr, target));
