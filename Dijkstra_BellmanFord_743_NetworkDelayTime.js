@@ -18,7 +18,7 @@ All edges times[i] = (u, v, w) will have 1 <= u, v <= N and 0 <= w <= 100. */
 //BellmanFord Algorithms, O(N^2), but can handle negative weight
 //init the dist for all to infinity, dist[source] = 0
 //loop for N - 1 times
-//for each edge, relax the dist, dist[to] = dist[from] + cost
+//for each edge, relax the dist, dist[to] = Math.min(dist[to], dist[from] + cost)
 //then you get all min dist[] from source
 /**
  * @param {number[][]} times
