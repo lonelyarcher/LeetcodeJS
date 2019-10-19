@@ -52,9 +52,7 @@ var smallestStringWithSwaps = function(s, pairs) {
         return parent[n];
     };
     const union = (n1, n2) => {
-        p1 = find(n1);
-        p2 = find(n2);
-        parent[p1] = p2;
+        parent[find(n1)] = find(n2);
     };
     for (let [s, t] of pairs) {
         union(s, t);
