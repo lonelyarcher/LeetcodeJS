@@ -46,5 +46,23 @@ It's guaranteed that string key could always be spelled by rotating the string r
 //DP, state (i, j) i match pos on key, and j is pos on ring
 //state transition: dp[i][j] => for j pos go left or right to find key[i + 1];
 var findRotateSteps = function(ring, key) {
-    
+    const m = ring.length; n = key.length;
+    const right = [...Array(m)].map(() => {});//clockwise distance from i to next char j
+    const left = [...Array(m)].map(() => {});//anti-clockwise distance from i to next char j
+    for (let i = 0; i < ring.length; i++) {
+        let j = 0;
+        while(j < m) {
+            const r = ring.charAt((i + j) % m);
+            if (!right[i][r]) right[i][r] = j;
+            const l = ring.charAt((i - j) % m);
+            if (!left[i][l]) left[i][l] = j;
+        }
+    }
+    const dp = [...Array(n + 1)].map(() => Array(m).fill(Infinity));
+    dp[0][0] = 0;
+    //for (let j = 1; j < m; j++) dp[0][j] = Math.min(j, m - j);
+    for (let i = 1; i <= n; i++) {
+        dp[i][j] = Math.min(dp[i - 1])
+    }
+
 };
