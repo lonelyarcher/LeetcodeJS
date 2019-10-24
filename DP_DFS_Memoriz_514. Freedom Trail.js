@@ -43,26 +43,37 @@ It's guaranteed that string key could always be spelled by rotating the string r
  * @param {string} key
  * @return {number}
  */
-//DP, state (i, j) i match pos on key, and j is pos on ring
+//DP, O(m*n), state (i, j) i match pos on key, and j is pos on ring
 //state transition: dp[i][j] => for j pos go left or right to find key[i + 1];
 var findRotateSteps = function(ring, key) {
     const m = ring.length; n = key.length;
-    const right = [...Array(m)].map(() => {});//clockwise distance from i to next char j
-    const left = [...Array(m)].map(() => {});//anti-clockwise distance from i to next char j
-    for (let i = 0; i < ring.length; i++) {
+    const right = [...Array(m)].map(() => Array(26).fill(undefined));//clockwise distance from i to next char j
+    const left = [...Array(m)].map(() => Array(26).fill(undefined));//anti-clockwise distance from i to next char j
+    for (let i = 0; i < m; i++) {
         let j = 0;
         while(j < m) {
-            const r = ring.charAt((i + j) % m);
-            if (!right[i][r]) right[i][r] = j;
-            const l = ring.charAt((i - j) % m);
-            if (!left[i][l]) left[i][l] = j;
+            const r = ring.charCodeAt((i + j) % m) - 'a'.charCodeAt(0);
+            if (right[i][r] === undefined) right[i][r] = j;
+            const l = ring.charCodeAt((i - j + m) % m) - 'a'.charCodeAt(0);
+            if (left[i][l] === undefined) left[i][l] = j;
+            j++;
         }
     }
-    const dp = [...Array(n + 1)].map(() => Array(m).fill(Infinity));
-    dp[0][0] = 0;
-    //for (let j = 1; j < m; j++) dp[0][j] = Math.min(j, m - j);
-    for (let i = 1; i <= n; i++) {
-        dp[i][j] = Math.min(dp[i - 1])
+    let s0 = Array(m).fill(Infinity);
+    s0[0] = 0;
+    for (let i = 0; i < n; i++) {
+        const s1 = Array(m).fill(Infinity);
+        for (let j = 0; j < m; j++) {
+            if (s0[j] !== Infinity) {
+                let l = left[j][key.charCodeAt(i) - 'a'.charCodeAt(0)];
+                let r = right[j][key.charCodeAt(i) - 'a'.charCodeAt(0)];
+                s1[(j - l + m) % m] = Math.min(s1[(j - l + m) % m], 1 + s0[j] + l);
+                s1[(j + r) % m] = Math.min(s1[(j + r + m) % m], 1 + s0[j] + r);
+            }
+        }
+        s0 = s1;
     }
-
+    return Math.min(...s0);
 };
+console.log(findRotateSteps("godding", "godding")); //13
+console.log(findRotateSteps("godding", "gd")); //4
