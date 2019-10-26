@@ -1,0 +1,48 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    grid-gap: 1px;
+}
+
+.grid-item {
+    min-width: 100px;
+}
+
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    transition: 1s;
+}
+
+.accordion:after {
+    content: "+";
+    float: right;
+}
+
+.active:after {
+    content: "-";
+    float: right;
+}
+
+.active, .accordion:hover {
+    background-color: #ccc;
+    
+}
+/* Tricks: hover parent show its child*/
+.grid-item:hover .panel {
+    max-height: 200px;
+}
+
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 2s ease-out;
+}
