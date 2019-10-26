@@ -1,8 +1,13 @@
 
-#by flex
+/* by flex */
 .container {
+  height: 500px;
   border: 1px solid black;
   display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .sq {
@@ -11,7 +16,7 @@
   display: flex;
   background-color: red;
   margin: 10px;
-  
+  flex-grow: 1;
 }
 
 .circle {
@@ -22,7 +27,7 @@
   background-color: yellow;
 }
 
-#by transform
+/* #by transform
 .container {
   border: 1px solid black;
 }
@@ -42,19 +47,5 @@
   margin: 50% 50%;
   transform: translate(-50%, -50%);
   background-color: yellow;
-}
+} */
 
-<div class='container'>
-  <div class='sq'>
-    <div class='circle'>
-    </div>
-  </div>
-   <div class='sq'>
-    <div class='circle'>
-    </div>
-  </div>
-   <div class='sq'>
-    <div class='circle'>
-    </div>
-  </div>
-</div>
