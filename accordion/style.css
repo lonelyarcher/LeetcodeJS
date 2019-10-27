@@ -35,9 +35,9 @@
     
 }
 /* Tricks: hover parent show its child*/
-.grid-item:hover .panel {
+/* .grid-item:hover .panel {
     max-height: 200px;
-}
+} */
 
 .panel {
     padding: 0 18px;
