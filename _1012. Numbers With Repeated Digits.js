@@ -27,5 +27,18 @@ Note:
  * @return {number}
  */
 var numDupDigitsAtMostN = function(N) {
-    
+    const ns = N + '';
+    const dp = [...Array(ns.length)].map(() => Array(1024).fill(undefined));
+    const dfs = (idx, mask, hasZero) => {
+        if (idx === 0) return 1;
+        if (dp[idx][mask] !== undefined) return dp[idx][mask];
+
+        for (let i = 1; i < 10; i++) {
+            if (hasZero && (1<<i & mask) === 0) {
+                dfs(idx + 1, mask | 1<<i, true);    
+            }
+            if (mask <= 1) dfs(idx + 1, mask);
+        }
+    };
+    return dfs(ns.length, 0, false);
 };

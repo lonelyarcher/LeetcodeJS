@@ -6,27 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - Codec",
-            "request": "launch",
-            "mainClass": "Codec",
-            "projectName": "leetcodejs_b444fdbb"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - _502_IPO",
-            "request": "launch",
-            "mainClass": "_502_IPO",
-            "projectName": "leetcodeJS_b444f9bb"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - _502_IPO",
-            "request": "launch",
-            "mainClass": "_502_IPO",
-            "projectName": "leetcodejs_b444fdbb"
-        },
-        {
-            "type": "java",
             "name": "Debug Java",
             "request": "launch",
             "mainClass": "${file}"

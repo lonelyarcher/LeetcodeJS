@@ -20,12 +20,7 @@ Explanation: 3 squares are necessary to cover the rectangle.
 //bottom array, like skyline, 
 var tilingRectangle = function(n, m) {
     if (n === m) return 1;
-    if (n < m) { 
-        const t = n;
-        n = m;
-        m = t;
-    }
-    let min = n; //the upper bound is max(m, n)
+    let min = Math.max(m, n); //the upper bound is max(m, n)
     const mem = {};
     const dfs = (arr, num) => {//arr is height array of base cells
         if (num >= min) return;
@@ -36,7 +31,8 @@ var tilingRectangle = function(n, m) {
         const k = arr.reduce((a, c) => a * m + c); //hash of arr as the key of state map
         if (mem[k] !== undefined && num >= mem[k]) return;//if not good as in mem cache, stop the search.
         mem[k] = num;//keep updating the cache of minimum squares to reach this state
-        const [idx, minH] = arr.reduce((a, c, i) => c < a[1] ? [i, c] : a, [0, arr[0]]); //find lowest left cell in the skyline array
+        const minH = Math.min(...arr), idx = arr.indexOf(minH);
+        //const [idx, minH] = arr.reduce((a, c, i) => c < a[1] ? [i, c] : a, [0, arr[0]]); //find lowest left cell in the skyline array
         let maxLen = 1; //maxLength of new adding square can go
         while (idx + maxLen - 1 < m && arr[idx + maxLen - 1] === minH && minH + maxLen <= n) maxLen++; //while keep the same base line height, this square can't exceed the m and n
         for (let len = maxLen - 1; len > 0; len--) { //try all possible size of new square length, from max to min, because if max succeeds, min will be skip
@@ -51,6 +47,6 @@ var tilingRectangle = function(n, m) {
 
 
 
-//console.log(tilingRectangle(2, 3)); //3
-//console.log(tilingRectangle(5, 8)); //5
+console.log(tilingRectangle(2, 3)); //3
+console.log(tilingRectangle(5, 8)); //5
 console.log(tilingRectangle(11, 13)); //6
