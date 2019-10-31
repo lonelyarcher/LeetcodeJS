@@ -24,3 +24,23 @@ xhr.send();
 });
 2. document.readyState (loading, interactive, complete) !== loading
 3. put javascript at the end of body, or load .js file defer.
+
+/*
+Operator Precedence:  
+1.()
+2. [] . new function()
+3. ++ -- 
+4. ! ~ typeof delete
+5. /%*  
+6. +- 
+7. >><< 
+8. <> >= <= instanceof 
+9. === == !==
+10. &
+11. ^ 
+12  |
+13  &&
+14 ||
+15 = yield , 
+
+*/ 

@@ -1,7 +1,27 @@
 console.log(1|undefined); //undefined with bit operation will be 0
 console.log(1 + undefined);
 
-//precedence:  () [].new ++-- !~typeof */%  +- >><< <> instanceof === & ^ | && || = yield , 
+
+
+/*
+Operator Precedence:  
+1.()
+2. [] . new function()
+3. ++ -- 
+4. ! ~ typeof delete
+5. /%*  
+6. +- 
+7. >><< 
+8. <> >= <= instanceof 
+9. === == !==
+10. &
+11. ^ 
+12  |
+13  &&
+14 ||
+15 = yield , 
+
+*/ 
 
 //count 1 bit in a binary number x
 const countOne = x => {

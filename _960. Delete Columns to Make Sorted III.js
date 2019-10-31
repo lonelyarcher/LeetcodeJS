@@ -40,27 +40,26 @@ Note:
  * @param {string[]} A
  * @return {number}
  */
+//1. this problem can be convert to find out longest increasing subsequences. O(n^2) for dp, 
+//   O(n*logn) for greedy of keeping a increasing list. if incoming char is greater than last index of list, append it. Otherwise replace the first greater one in the list with it.
+//   but this greedy solution won't work, since it may have two elements can not be judged, like 'ab' : 'ba', DP can keep both situations for later. so only way is to do DP
+//2. for multiple strings in a list, you can treat it same way as one string, just comparing every the string' subsequences at the same position is increasing.
+// O(A[0].length^2*A.length) 
 var minDeletionSize = function(A) {
-    const B = A.reduce((a, c) => {
-        [...c].forEach((ch, i) => a[i] += ch); 
-        return a;
-    }, Array(A[0].length).fill(''));
-    const dp = Array(B.length + 1).fill(Infinity);
-    dp[0] = 0;
-    const prior = (s1, s2) => {
-        for (let i = 0; i < s1.length; i++) {
-            if (s1.charCodeAt(i) - s2.charCodeAt(i) > 0) return false;
+    const n = A[0].length;
+    const dp = Array(n).fill(1); //max increasing subsequence ends at i
+    const greater = (i, j) => {
+        for (let k = 0; k < A.length; k++) {
+            if (A[k].charCodeAt(i) - A[k].charCodeAt(j) < 0) return false;
         }
         return true;
     };
-    for (let i = 1; i <= B.length; i++) {
-        dp[i] = i - 1;
-        for (let j = i - 1; j > 0; j--) {
-            //mistake, need check in case value update by another other in previous step.
-            if (prior(B[j - 1], B[i - 1])) dp[i] = Math.min(dp[i], dp[j] + i - j - 1);
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (greater(i, j)) dp[i] = Math.max(dp[i], dp[j] + 1);
         }
     }
-    return Math.min(...dp.map((l, i) => l + B.length - i));
+    return n - Math.max(...dp);
 };
 
 console.log(minDeletionSize(["baabab"]));//2
