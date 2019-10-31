@@ -45,8 +45,8 @@ var minDeletionSize = function(A) {
         [...c].forEach((ch, i) => a[i] += ch); 
         return a;
     }, Array(A[0].length).fill(''));
-    const dp = [...Array(B.length + 1)].map(() => ({}));
-    dp[0] = {['0'.repeat(A.length)]: 0};
+    const dp = Array(B.length + 1).fill(Infinity);
+    dp[0] = 0;
     const prior = (s1, s2) => {
         for (let i = 0; i < s1.length; i++) {
             if (s1.charCodeAt(i) - s2.charCodeAt(i) > 0) return false;
@@ -54,13 +54,13 @@ var minDeletionSize = function(A) {
         return true;
     };
     for (let i = 1; i <= B.length; i++) {
-        dp[i][B[i - 1]] = i - 1;
-        for (let k of Object.keys(dp[i - 1])) {
-            dp[i][k] = dp[i][k] === undefined ? dp[i - 1][k] + 1 : Math.min(dp[i][k], dp[i - 1][k] + 1); //mistake, need check in case value update by another other in previous step.
-            if (prior(k, B[i - 1])) dp[i][B[i - 1]] = Math.min(dp[i][B[i - 1]], dp[i - 1][k]);
+        dp[i] = i - 1;
+        for (let j = i - 1; j > 0; j--) {
+            //mistake, need check in case value update by another other in previous step.
+            if (prior(B[j - 1], B[i - 1])) dp[i] = Math.min(dp[i], dp[j] + i - j - 1);
         }
     }
-    return Math.min(...Object.values(dp[B.length]));
+    return Math.min(...dp.map((l, i) => l + B.length - i));
 };
 
 console.log(minDeletionSize(["baabab"]));//2
