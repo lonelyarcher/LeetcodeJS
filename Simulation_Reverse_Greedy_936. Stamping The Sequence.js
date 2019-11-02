@@ -40,20 +40,40 @@ stamp and target only contain lowercase letters. */
  * @param {string} target
  * @return {number[]}
  */
-//Reverse the Simulation, the last stamp can be a????ca, then search backward to all ??????
+//Reverse the Simulation, the last stamp can be back to 'a????ca', then search backward to all '??????'
+//Since it is backward, and not require the minimum stamping times, so once we find any match we can reverse it immediately until no matches, using while loop
+//when no match, if the string is ??????, then return every stamp index. Otherwise return []; 
+//if matched before (in seen set), which means all char are changed to ? already, then skip it return false
 var movesToStamp = function(stamp, target) {
-    const match = s => {
-        const ans = [];
-        for (let i = 0; i < s.length - 4; i++) {
-            let match = true;
-            for (let j = 0; j < 4; j++) {
-                if (target.charAt(i) !== s.charAt(i + j) && s.charAt(i + j) !== '?') {
-                    match = false;
-                    break;
-                }
-                if (match) ans.push(i);
+    const s = [...stamp], t = [...target], m = s.length, n = t.length, ans = [], seen = new Set();
+    const match = i => {
+        if (seen.has(i)) return false;
+        let match = true, count = 0;
+        for (let j = 0; j < m; j++) {
+            if (s[j] !== t[i + j] && t[i + j] !== '?') {
+                match = false;
+                break;
             }
+            count += (t[i + j] === '?');
         }
+        if (match && count < m) {
+            for (let j = 0; j < m; j++) t[i + j] = '?';
+            ans.push(i);
+            seen.add(i);
+            return true;
+        }
+        return false;
     }
-    return ans;
+    let anyMatch = true;
+    while (anyMatch) {
+        anyMatch = false;
+        for (let i = 0; i <= t.length - s.length; i++) anyMatch = anyMatch || match(i);
+    }
+    return t.every(ch => ch === '?') ? ans.reverse() : [];
 };
+
+console.log(movesToStamp("k", "kkkkkkkkkkkkkkk"));//
+console.log(movesToStamp("f", "ffffffffff"));//
+console.log(movesToStamp("aye", "eyeye"));//[]
+console.log(movesToStamp(stamp = "abc", target = "ababc")); //0, 2
+console.log(movesToStamp(stamp = "abca", target = "aabcaca")); //3, 0, 1
