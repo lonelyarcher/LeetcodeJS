@@ -33,7 +33,7 @@ Operator Precedence:
 4. ! ~ typeof delete
 5. /%*  
 6. +- 
-7. >><< 
+7. >> << 
 8. <> >= <= instanceof 
 9. === == !==
 10. &
@@ -41,6 +41,7 @@ Operator Precedence:
 12  |
 13  &&
 14 ||
-15 = yield , 
+15 =, +=, -=
+16 yield ... , 
 
 */ 
