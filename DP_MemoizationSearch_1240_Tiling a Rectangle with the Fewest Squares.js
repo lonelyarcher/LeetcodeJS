@@ -18,7 +18,9 @@ Explanation: 3 squares are necessary to cover the rectangle.
 //Memoization Search, from the rectangle's bottom to build a skyline with add squares, try all possible size.
 //when add the square, always begin at the lowest and left space
 //bottom array, like skyline, 
+//time O(m^n)
 var tilingRectangle = function(n, m) {
+    if (m > n) return tilingRectangle(m, n);//keep m is smaller one
     if (n === m) return 1;
     let min = Math.max(m, n); //the upper bound is max(m, n)
     const mem = {};
@@ -32,7 +34,6 @@ var tilingRectangle = function(n, m) {
         if (mem[k] !== undefined && num >= mem[k]) return;//if not good as in mem cache, stop the search.
         mem[k] = num;//keep updating the cache of minimum squares to reach this state
         const minH = Math.min(...arr), idx = arr.indexOf(minH);
-        //const [idx, minH] = arr.reduce((a, c, i) => c < a[1] ? [i, c] : a, [0, arr[0]]); //find lowest left cell in the skyline array
         let maxLen = 1; //maxLength of new adding square can go
         while (idx + maxLen - 1 < m && arr[idx + maxLen - 1] === minH && minH + maxLen <= n) maxLen++; //while keep the same base line height, this square can't exceed the m and n
         for (let len = maxLen - 1; len > 0; len--) { //try all possible size of new square length, from max to min, because if max succeeds, min will be skip
