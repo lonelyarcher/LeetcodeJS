@@ -33,6 +33,26 @@ Note:
  * @param {number} K
  * @return {number}
  */
+//increase the dimension strategies: 
+//1. find more attributes to define state correctly and in necessary details 
+//2. escalate the state, make the finally state just one special case of universal case.
+//This question is second case, we define the state as L total songs with N unique song. 
+//Then the answer dp[L][N] is just one special case of state.
+//state transition: dp[i][j] = dp[i - 1][j - 1] * (N - j + 1) + dp[i - 1][j] * (j - K) if j > K
 var numMusicPlaylists = function(N, L, K) {
-    
+    const dp = [...Array(L + 1)].map(() => Array(N + 1).fill(undefined));
+    for (let j = 0; j <= N; j++) dp[0][j] = 0;
+    for (let i = 0; i <= L; i++) dp[i][0] = 0;
+    dp[0][0] = 1;
+    for (let i = 1; i <= L; i++) {
+        for (let j = 1; j <= N; j++) {
+            dp[i][j] = dp[i - 1][j - 1]* (N - j + 1);
+            if (L > K && j > K) dp[i][j] += dp[i - 1][j] * (j - K);
+        }
+    }
+    return dp[L][N];
 };
+
+console.log(numMusicPlaylists(N = 3, L = 3, K = 1));//6
+console.log(numMusicPlaylists(N = 2, L = 3, K = 0));//6
+console.log(numMusicPlaylists(N = 2, L = 3, K = 1));//2
