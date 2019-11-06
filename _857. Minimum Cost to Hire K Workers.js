@@ -34,5 +34,18 @@ Answers within 10^-5 of the correct answer will be considered correct. */
  * @return {number}
  */
 var mincostToHireWorkers = function(quality, wage, K) {
-    
+    const n = wage.length;
+    let min = Infinity;
+    L1:
+    for (let mvp = 0; mvp < n; mvp++) {
+        const pay = [], ratio = wage[mvp] / quality[mvp];
+        for (let j = 0; j < n; j++) {
+            pay.push(quality[j]*ratio + 0.00001 < wage[j] ? Infinity : quality[j]*ratio);
+        }
+        min = Math.min(min, pay.sort((a, b) => a - b).slice(0, K).reduce((a, c) => a + c)); 
+    }
+    return min;
 };
+
+console.log(mincostToHireWorkers(quality = [3,1,10,10,1], wage = [4,8,2,2,7], K = 3)); // 30.66667
+console.log(mincostToHireWorkers(quality = [10,20,5], wage = [70,50,30], K = 2)); //105.00000
