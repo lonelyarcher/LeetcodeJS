@@ -28,6 +28,7 @@ row is guaranteed to be a permutation of 0...len(row)-1. */
 //let's connect couch as graph, if two couches share a same couple, connect them.
 //so target is:[0, 0], [1, 1], [2, 2]..., N connected components. If you current has n connected component which is a connected cycle in graphy
 //the mini sway is N - n
+//O(n)
 var minSwapsCouples = function(row) {
     //construct adjacent couches.
     const N = ~~(row.length/2);
@@ -40,9 +41,10 @@ var minSwapsCouples = function(row) {
     }
     //find next connected node
     const next = (i, j) => {
-        let [a, b] = adj[couches[j][0]];
-        if (a === i || b === i) [a, b] = adj[couches[j][1]];
-        return j === a ? b : a;
+        let [a, b] = adj[couches[i][j]];
+        const ni = i === a ? b : a;
+        const nj = couches[ni][0] === couches[i][j] ? 1 : 0;
+        return [ni, nj];
     }
     //calculate num of connected components (cc)
     let cc = 0; 
@@ -52,16 +54,34 @@ var minSwapsCouples = function(row) {
         visited.add(i);
         cc++;
         if (couches[i][0] !== couches[i][1]) {
-            ni = next(null, i);
+            let [ni, nj] = next(i, 0);
             while (ni !== i) {
                 visited.add(ni);
-                ni = next(i, ni);
+                [ni, nj] = next(ni, nj);
             }
         }
     }
     return N - cc;
 };
 
-console.log(minSwapsCouples([5,4,2,6,3,1,0,7]));
-console.log(minSwapsCouples([0, 2, 1, 3])); //1
-console.log(minSwapsCouples([3, 2, 0, 1])); //0
+//O(n^2), swap as long as it make couple together, each loop only swap once, take O(n). total O(n^2)
+//easy to code, do whatever it can until all finish or no change. so you can do once a loop in for/while
+var minSwapsCouples_1 = function(row) {
+    let ans = 0;
+    for (let i = 0; i < row.length; i += 2) {
+        const x = row[i];
+        if ((x^1) !== row[i + 1]) {
+            ans++;
+            for (let j = i + 2; j < row.length; j++) {
+                if (row[j] === (x^1)) {
+                    [row[j], row[i + 1]] = [row[i + 1], row[j]];
+                    break;
+                }
+            }
+        }
+    }
+    return ans;
+};
+console.log(minSwapsCouples_1([0, 2, 1, 3])); //1
+console.log(minSwapsCouples_1([5,4,2,6,3,1,0,7])); //2
+console.log(minSwapsCouples_1([3, 2, 0, 1])); //0
