@@ -248,3 +248,35 @@ class FizzBuzz {
         }
     }
 }
+//1226. The Dining Philosophers
+class DiningPhilosophers {
+    
+    private Semaphore[] fork = new Semaphore[5];
+    private Semaphore eating = new Semaphore(3);
+
+    public DiningPhilosophers() {
+        for (int i = 0; i < 5; i++) fork[i] = new Semaphore(1);
+    }
+
+    // call the run() method of any runnable to execute its code
+    public void wantsToEat(int philosopher,
+                           Runnable pickLeftFork,
+                           Runnable pickRightFork,
+                           Runnable eat,
+                           Runnable putLeftFork,
+                           Runnable putRightFork) throws InterruptedException {
+        eating.acquire();
+        fork[philosopher].acquire();
+        fork[(philosopher - 1 + 5)%5].acquire();
+
+        pickRightFork.run();
+        pickLeftFork.run();
+        eat.run();
+        putLeftFork.run();
+        putRightFork.run();
+
+        fork[(philosopher - 1 + 5)%5].release();
+        fork[philosopher].release();
+        eating.release();
+    }
+}
