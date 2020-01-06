@@ -37,11 +37,13 @@ from collections import Counter
 from typing import List
 class Solution:
     def minSwaps(self, data: List[int]) -> int:
-        ones = Counter(data)[1]
-        zeros = Counter(data[:ones])[0]
+        ones = data.count(1)
+        zeros = data[:ones].count(0)
         minSwap = zeros
         for i in range(ones, len(data)):
             if data[i] == 0: zeros += 1
             if data[i - ones] == 0: zeros -= 1
             minSwap = min(zeros, minSwap)
         return minSwap
+
+print(Solution().minSwaps([1,0,1,0,1,0,0,1,1,0,1])) #3

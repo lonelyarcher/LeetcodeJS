@@ -30,7 +30,7 @@ var newInteger = function(n) {
     const arr = [];
     while(n > 0) {
         arr.unshift(n%9);
-        n = ~~(n/9);
+        n = ~~(n/9); 
     }
     return arr.reduce((a, c) => a*10 + c);
 };
