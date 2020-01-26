@@ -1,6 +1,6 @@
 /* Given an array nums of positive integers, return the longest possible length of an array prefix of nums, such that it is possible to remove exactly one element from this prefix so that every number that has appeared in it will have the same number of occurrences.
 
-If after removing one element there are no remaining elements, it's still considered that every appeared number has the same number of ocurrences (0).
+If after removing one element there are no remaining elements, it's still considered that every appeared number has the same number of occurrences (0).
 
  
 
@@ -32,7 +32,7 @@ Constraints:
  * @param {number[]} nums
  * @return {number}
  */
-//four senarios: 
+//four scenarios: 
 //1. every num appear once [1, 2, 3, 4, ...] 
 //2. only one num [1, 1, 1, ...]
 //3. one num appear once, all other appear in same count [1, 2, 2, 3, 3]

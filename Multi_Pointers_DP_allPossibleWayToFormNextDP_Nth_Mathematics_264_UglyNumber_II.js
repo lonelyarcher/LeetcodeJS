@@ -18,7 +18,7 @@ n does not exceed 1690. */
  */
 //DP, a ugly number must be from previous ugly number multiply 2 or 3 or 5.
 //base from first ugly 1, put 3 pointers for *2, *3, *5 each
-//choose the minimum number, then for next same pointer number, must be immidiately next ugly number * pointer value, so we can increase this pointer by 1 
+//choose the minimum number, then for next same pointer number, must be immediately next ugly number * pointer value, so we can increase this pointer by 1 
 var nthUglyNumbers = function(n) {
     const ugly = [1];
     let p2 = 0, p3 = 0, p5 = 0;

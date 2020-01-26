@@ -19,13 +19,13 @@ function TreeNode(val) {
  */
 var serialize = function(root) {
     const ans = [];
-    const inorder = root => {
+    const preorder = root => {
         if (!root) return;
         ans.push(root.val);
-        inorder(root.left);
-        inorder(root.right);
+        preorder(root.left);
+        preorder(root.right);
     };
-    inorder(root);
+    preorder(root);
     return new Int16Array(ans);
 };
 
